@@ -91,7 +91,7 @@ streamlit run app.py
 Open the URL shown in the terminal, normally:
 
 ```text
-http://localhost:8501
+https://malliyadav645-cmd.github.io/disease_detection/
 ```
 
 ### Suggested presentation flow
