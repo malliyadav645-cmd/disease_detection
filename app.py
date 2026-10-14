@@ -26,245 +26,508 @@ MODELS_DIR = ROOT / "models"
 DATA_DIR = ROOT / "data"
 
 st.set_page_config(
-    page_title="VitaScan AI | Precision Health Screening",
+    page_title="VitaScan AI | Clinical Screening Platform",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Custom High-End Clinical Dark Theme CSS
+# ── Professional Clinical UI CSS ─────────────────────────────────────────────
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    :root {
-        --bg-main: #060913;
-        --card-bg: rgba(14, 23, 42, 0.75);
-        --card-border: rgba(148, 163, 184, 0.14);
-        --accent-cyan: #06b6d4;
-        --accent-blue: #3b82f6;
-        --accent-emerald: #10b981;
-        --accent-rose: #f43f5e;
-        --accent-amber: #f59e0b;
-        --accent-violet: #8b5cf6;
-        --text-primary: #f8fafc;
-        --text-secondary: #94a3b8;
-    }
+    * { box-sizing: border-box; }
 
     html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 14px;
     }
 
+    /* ── Hide ALL Streamlit chrome ─────────────────────── */
+    #MainMenu { visibility: hidden !important; }
+    header[data-testid="stHeader"] { display: none !important; }
+    footer { display: none !important; }
+    [data-testid="stToolbar"] { display: none !important; }
+    .stDeployButton { display: none !important; }
+    [data-testid="stDecoration"] { display: none !important; }
+    [data-testid="stStatusWidget"] { display: none !important; }
+    .viewerBadge_container__1QSob { display: none !important; }
+    .css-1dp5vir { display: none !important; }
+
+    /* ── Background ─────────────────────────────────────── */
     .stApp {
-        background: radial-gradient(circle at 15% 0%, #0d1a33 0%, #070c18 40%, #04060c 100%);
-        color: var(--text-primary);
+        background: #080e1a;
+        color: #e2e8f0;
     }
 
+    /* Dot grid overlay */
+    .stApp::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(56, 189, 248, 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
+        background-size: 52px 52px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #091020 0%, #060913 100%);
-        border-right: 1px solid var(--card-border);
+        background: #060b15 !important;
+        border-right: 1px solid rgba(56, 189, 248, 0.1) !important;
     }
 
-    h1, h2, h3, h4 {
-        font-family: 'Space Grotesk', sans-serif !important;
-        letter-spacing: -0.03em;
-        font-weight: 700;
+    [data-testid="stSidebarContent"] { padding: 0 !important; }
+
+    /* ── Typography ──────────────────────────────────────── */
+    h1, h2, h3, h4, h5 {
+        font-family: 'Syne', sans-serif !important;
+        letter-spacing: -0.025em;
+        color: #f1f5f9 !important;
     }
 
-    .hero-container {
-        padding: 1.5rem 0 1rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    /* ── Form inputs ─────────────────────────────────────── */
+    .stNumberInput input,
+    .stTextInput input {
+        background: #0f1829 !important;
+        border: 1px solid rgba(148, 163, 184, 0.18) !important;
+        border-radius: 8px !important;
+        color: #e2e8f0 !important;
+        font-size: 0.875rem !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+    }
+
+    .stNumberInput input:focus,
+    .stTextInput input:focus {
+        border-color: rgba(56, 189, 248, 0.45) !important;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.08) !important;
+        outline: none !important;
+    }
+
+    .stNumberInput label,
+    .stTextInput label,
+    .stSelectbox label {
+        color: #64748b !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.04em !important;
+        text-transform: uppercase !important;
+    }
+
+    [data-baseweb="select"] > div {
+        background: #0f1829 !important;
+        border: 1px solid rgba(148, 163, 184, 0.18) !important;
+        border-radius: 8px !important;
+        color: #e2e8f0 !important;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .stButton > button {
+        border-radius: 8px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.83rem !important;
+        transition: all 0.2s ease !important;
+        border: 1px solid rgba(148, 163, 184, 0.18) !important;
+        background: #0f1829 !important;
+        color: #94a3b8 !important;
+        padding: 0.42rem 0.85rem !important;
+        letter-spacing: 0.01em !important;
+    }
+
+    .stButton > button:hover {
+        background: #16243d !important;
+        border-color: rgba(56, 189, 248, 0.3) !important;
+        color: #e2e8f0 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Primary CTA */
+    .stButton > button[data-testid="baseButton-primary"],
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #1d4ed8, #7c3aed) !important;
+        border: none !important;
+        color: #fff !important;
+        font-size: 0.9rem !important;
+        padding: 0.6rem 1.5rem !important;
+        box-shadow: 0 4px 16px rgba(29, 78, 216, 0.28) !important;
+    }
+
+    .stButton > button[data-testid="baseButton-primary"]:hover,
+    .stButton > button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #1e40af, #5b21b6) !important;
+        box-shadow: 0 6px 24px rgba(29, 78, 216, 0.45) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* Download button */
+    .stDownloadButton > button {
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.83rem !important;
+        background: #0f1829 !important;
+        border: 1px solid rgba(56, 189, 248, 0.25) !important;
+        color: #38bdf8 !important;
+    }
+
+    .stDownloadButton > button:hover {
+        background: rgba(56, 189, 248, 0.08) !important;
+        border-color: rgba(56, 189, 248, 0.45) !important;
+    }
+
+    /* ── Tabs ────────────────────────────────────────────── */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0;
+        background: #0a1120;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: 10px;
+        padding: 4px;
         margin-bottom: 1.5rem;
     }
 
-    .badge-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.28rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        background: rgba(59, 130, 246, 0.12);
-        color: #60a5fa;
-        border: 1px solid rgba(59, 130, 246, 0.28);
-        margin-bottom: 0.75rem;
-    }
-
-    .glass-panel {
-        background: var(--card-bg);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid var(--card-border);
-        border-radius: 18px;
-        padding: 1.25rem 1.4rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        transition: border-color 0.2s ease;
-    }
-
-    .glass-panel:hover {
-        border-color: rgba(148, 163, 184, 0.25);
-    }
-
-    .metric-badge-card {
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 14px;
-        padding: 1rem;
-        text-align: center;
-    }
-
-    .metric-val {
-        font-family: 'Space Grotesk', monospace;
-        font-size: 1.7rem;
-        font-weight: 700;
-        line-height: 1.1;
-    }
-
-    .metric-lbl {
-        color: var(--text-secondary);
-        font-size: 0.76rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 0.35rem;
-    }
-
-    /* Risk Spectrum Meter */
-    .risk-meter-container {
-        margin: 1.25rem 0;
-        padding: 1.2rem;
-        border-radius: 16px;
-        background: rgba(10, 16, 30, 0.8);
-        border: 1px solid var(--card-border);
-    }
-
-    .risk-bar-track {
-        height: 16px;
-        border-radius: 8px;
-        background: linear-gradient(90deg, #10b981 0%, #eab308 35%, #f97316 68%, #ef4444 100%);
-        position: relative;
-        margin: 1rem 0 0.5rem;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-    }
-
-    .risk-pointer {
-        position: absolute;
-        top: -6px;
-        width: 28px;
-        height: 28px;
-        background: #ffffff;
-        border: 3px solid #0f172a;
-        border-radius: 50%;
-        transform: translateX(-50%);
-        box-shadow: 0 0 12px rgba(255,255,255,0.8);
-        transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .status-alert {
-        padding: 1.25rem;
-        border-radius: 16px;
-        margin-bottom: 1.2rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .status-alert.critical {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    .status-alert.elevated {
-        background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(249, 115, 22, 0.4);
-    }
-
-    .status-alert.moderate {
-        background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(234, 179, 8, 0.4);
-    }
-
-    .status-alert.low {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.85));
-        border: 1px solid rgba(16, 185, 129, 0.4);
-    }
-
-    .anomaly-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.6rem;
-        background: rgba(239, 68, 68, 0.14);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 6px;
-        font-size: 0.78rem;
-        color: #fca5a5;
-        margin: 0.2rem 0.2rem 0.2rem 0;
-    }
-
-    .normal-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.6rem;
-        background: rgba(16, 185, 129, 0.12);
-        border: 1px solid rgba(16, 185, 129, 0.25);
-        border-radius: 6px;
-        font-size: 0.78rem;
-        color: #6ee7b7;
-        margin: 0.2rem 0.2rem 0.2rem 0;
-    }
-
-    /* Buttons */
-    .stButton > button {
-        border-radius: 12px;
-        font-weight: 600;
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 7px;
+        padding: 0.5rem 1.1rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: #475569;
+        border: none;
         transition: all 0.2s ease;
     }
 
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
-        border: none !important;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-        font-size: 1.02rem;
-        padding: 0.65rem 1.5rem;
-    }
-
-    .stButton > button[kind="primary"]:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
-    }
-
-    /* Tab styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 0.75rem;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-    }
-
-    .stTabs [data-baseweb="tab"] {
-        padding: 0.7rem 1.4rem;
-        border-radius: 10px 10px 0 0;
-        font-weight: 600;
-        color: #94a3b8;
-    }
-
     .stTabs [aria-selected="true"] {
-        color: #60a5fa !important;
-        background: rgba(30, 41, 59, 0.5) !important;
-        border-bottom: 2px solid #3b82f6 !important;
+        background: #162033 !important;
+        color: #e2e8f0 !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important;
     }
 
-    .mono-code {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 0.84rem;
-        background: rgba(15, 23, 42, 0.9);
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        border: 1px solid rgba(148, 163, 184, 0.15);
+    /* ── Expanders ───────────────────────────────────────── */
+    .streamlit-expanderHeader {
+        background: #0d1628 !important;
+        border: 1px solid rgba(148, 163, 184, 0.12) !important;
+        border-radius: 8px !important;
+        color: #94a3b8 !important;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
     }
+
+    .streamlit-expanderContent {
+        background: #090f1e !important;
+        border: 1px solid rgba(148, 163, 184, 0.08) !important;
+        border-top: none !important;
+        border-radius: 0 0 8px 8px !important;
+        padding: 1rem !important;
+    }
+
+    /* ── Misc ────────────────────────────────────────────── */
+    hr { border-color: rgba(148, 163, 184, 0.07) !important; }
+
+    [data-testid="stDataFrame"] {
+        border-radius: 10px !important;
+        border: 1px solid rgba(148, 163, 184, 0.1) !important;
+        overflow: hidden !important;
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 8px !important;
+        font-size: 0.875rem !important;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #080e1a; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════════════
+       COMPONENT CLASSES
+    ══════════════════════════════════════════════════════ */
+
+    /* Sidebar brand */
+    .vs-brand {
+        padding: 1.1rem 1rem;
+        border-bottom: 1px solid rgba(56, 189, 248, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
+    .vs-brand-mark {
+        width: 34px; height: 34px;
+        background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+        border-radius: 9px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+        box-shadow: 0 3px 12px rgba(29,78,216,0.4);
+        flex-shrink: 0;
+    }
+    .vs-brand-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 1rem; font-weight: 800;
+        color: #f1f5f9; letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+    .vs-brand-sub {
+        font-size: 0.62rem; color: #334155; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.07em;
+    }
+
+    /* Sidebar section label */
+    .vs-section-label {
+        padding: 0.7rem 0.85rem 0.3rem;
+        font-size: 0.62rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.1em;
+        color: #1e3a5f;
+    }
+
+    /* Model spec card */
+    .vs-model-card {
+        margin: 0.35rem 0.75rem 0.6rem;
+        padding: 0.8rem 0.9rem;
+        background: #0d1628;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        border-radius: 10px;
+    }
+    .vs-mc-header {
+        display: flex; justify-content: space-between;
+        align-items: center; margin-bottom: 0.45rem;
+    }
+    .vs-mc-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; }
+    .vs-mc-live {
+        font-size: 0.62rem; font-weight: 600;
+        padding: 0.12rem 0.45rem; border-radius: 999px;
+        background: rgba(16,185,129,0.1); color: #34d399;
+        border: 1px solid rgba(16,185,129,0.18);
+    }
+    .vs-mc-name { font-size: 0.88rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.15rem; }
+    .vs-mc-type { font-size: 0.7rem; color: #475569; margin-bottom: 0.65rem; line-height: 1.35; }
+    .vs-mc-metrics {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;
+        padding-top: 0.6rem;
+        border-top: 1px solid rgba(148,163,184,0.07);
+    }
+    .vs-mc-metric {
+        text-align: center; padding: 0.35rem;
+        background: rgba(0,0,0,0.18); border-radius: 6px;
+    }
+    .vs-mc-val { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 700; }
+    .vs-mc-mlabel { font-size: 0.58rem; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.08rem; }
+
+    /* Sidebar workflow */
+    .vs-how {
+        margin: 0 0.75rem 0.6rem;
+        padding: 0.8rem 0.9rem;
+        background: rgba(29,78,216,0.04);
+        border: 1px solid rgba(29,78,216,0.1);
+        border-radius: 10px;
+    }
+    .vs-how-title { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #1e3a5f; margin-bottom: 0.55rem; }
+    .vs-how-step { display: flex; align-items: flex-start; gap: 0.55rem; margin-bottom: 0.38rem; font-size: 0.75rem; color: #64748b; line-height: 1.4; }
+    .vs-step-n {
+        width: 17px; height: 17px; flex-shrink: 0;
+        background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.18);
+        border-radius: 50%; font-size: 0.58rem; font-weight: 700;
+        color: #38bdf8; display: flex; align-items: center; justify-content: center;
+        margin-top: 1px;
+    }
+
+    /* Sidebar disclaimer */
+    .vs-disclaimer {
+        margin: 0 0.75rem 0.75rem;
+        padding: 0.6rem 0.8rem;
+        background: rgba(120,53,15,0.06);
+        border: 1px solid rgba(120,53,15,0.15);
+        border-radius: 8px;
+        font-size: 0.68rem; color: #57534e; line-height: 1.5;
+    }
+    .vs-disclaimer strong { color: #78350f; }
+
+    /* Page header */
+    .vs-header {
+        padding: 1.25rem 0 1rem;
+        border-bottom: 1px solid rgba(148,163,184,0.07);
+        margin-bottom: 1.5rem;
+    }
+    .vs-breadcrumb {
+        display: flex; align-items: center; gap: 0.35rem;
+        font-size: 0.72rem; color: #1e3a5f; font-weight: 500;
+        margin-bottom: 0.55rem;
+    }
+    .vs-bc-active { color: #64748b; }
+    .vs-header-body {
+        display: flex; justify-content: space-between;
+        align-items: flex-end; flex-wrap: wrap; gap: 1rem;
+    }
+    .vs-header-title {
+        margin: 0 !important; font-size: clamp(1.5rem, 2.6vw, 2.2rem) !important;
+        font-weight: 800 !important; line-height: 1.1 !important;
+        letter-spacing: -0.04em !important;
+    }
+    .vs-header-desc { font-size: 0.84rem; color: #475569; margin-top: 0.35rem; line-height: 1.6; max-width: 660px; }
+
+    /* KPI strip */
+    .vs-kpis { display: flex; gap: 0.45rem; }
+    .vs-kpi {
+        text-align: center; padding: 0.55rem 0.9rem;
+        background: #0a1120;
+        border: 1px solid rgba(148,163,184,0.1);
+        border-radius: 9px; min-width: 82px;
+    }
+    .vs-kpi-val { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; line-height: 1.1; }
+    .vs-kpi-lbl { font-size: 0.6rem; color: #334155; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 0.15rem; font-weight: 600; }
+
+    /* Toolbar heading above inputs */
+    .vs-toolbar-label {
+        font-size: 0.62rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.1em;
+        color: #1e3a5f; margin-bottom: 0.6rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid rgba(148,163,184,0.05);
+    }
+
+    /* Pending state */
+    .vs-pending {
+        text-align: center; padding: 3.5rem 2rem;
+        background: #0a1120;
+        border: 1px dashed rgba(148,163,184,0.12);
+        border-radius: 12px;
+    }
+    .vs-pending-ico {
+        width: 52px; height: 52px; margin: 0 auto 1.1rem;
+        background: rgba(29,78,216,0.07);
+        border: 1px solid rgba(29,78,216,0.15);
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+    }
+    .vs-pending h3 { font-size: 1rem !important; font-weight: 700 !important; color: #f1f5f9 !important; margin: 0 0 0.35rem !important; }
+    .vs-pending p { font-size: 0.84rem; color: #334155; max-width: 400px; margin: 0 auto; line-height: 1.6; }
+    .vs-pending-tag {
+        display: inline-flex; align-items: center; gap: 0.35rem;
+        margin-top: 1.1rem; padding: 0.3rem 0.8rem;
+        background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.14);
+        border-radius: 999px; font-size: 0.72rem; font-weight: 600; color: #38bdf8;
+    }
+
+    /* Result card */
+    .vs-result {
+        display: flex; align-items: flex-start; gap: 1.1rem;
+        padding: 1.2rem 1.4rem; border-radius: 12px;
+        border: 1px solid; margin-bottom: 1.1rem;
+    }
+    .vs-result.critical { background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.28); }
+    .vs-result.elevated { background: rgba(249,115,22,0.05); border-color: rgba(249,115,22,0.28); }
+    .vs-result.moderate { background: rgba(234,179,8,0.05); border-color: rgba(234,179,8,0.28); }
+    .vs-result.low      { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.28); }
+    .vs-result-ico {
+        width: 46px; height: 46px; border-radius: 11px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .vs-result-ico.critical { background: rgba(239,68,68,0.1); }
+    .vs-result-ico.elevated { background: rgba(249,115,22,0.1); }
+    .vs-result-ico.moderate { background: rgba(234,179,8,0.1); }
+    .vs-result-ico.low      { background: rgba(16,185,129,0.1); }
+    .vs-result-meta { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+    .vs-result-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; color: #f1f5f9; margin-bottom: 0.28rem; }
+    .vs-decision {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        font-size: 0.74rem; font-weight: 700;
+        padding: 0.18rem 0.6rem; border-radius: 6px; margin-bottom: 0.45rem;
+    }
+    .vs-decision.pos { background: rgba(239,68,68,0.09); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+    .vs-decision.neg { background: rgba(16,185,129,0.09); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+    .vs-result-action { font-size: 0.84rem; color: #64748b; line-height: 1.6; }
+
+    /* 4-metric stat row */
+    .vs-stats {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 0.65rem; margin-bottom: 0.85rem;
+    }
+    .vs-stat {
+        padding: 0.9rem 1rem; background: #0a1120;
+        border: 1px solid rgba(148,163,184,0.1); border-radius: 10px;
+        transition: border-color 0.2s;
+    }
+    .vs-stat:hover { border-color: rgba(148,163,184,0.2); }
+    .vs-stat-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #334155; margin-bottom: 0.28rem; }
+    .vs-stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; line-height: 1; }
+    .vs-stat-sub { font-size: 0.68rem; color: #334155; margin-top: 0.18rem; }
+
+    /* Risk meter */
+    .vs-meter {
+        padding: 1rem 1.2rem; background: #0a1120;
+        border: 1px solid rgba(148,163,184,0.1); border-radius: 11px;
+        margin-bottom: 0.85rem;
+    }
+    .vs-meter-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
+    .vs-meter-title { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: #334155; }
+    .vs-meter-val { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; }
+    .vs-track {
+        height: 9px; border-radius: 5px;
+        background: linear-gradient(90deg, #10b981 0%, #84cc16 22%, #eab308 42%, #f97316 66%, #ef4444 100%);
+        position: relative; margin: 0.4rem 0;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    }
+    .vs-thumb {
+        position: absolute; top: -5.5px;
+        width: 20px; height: 20px; background: #fff;
+        border: 3px solid #080e1a; border-radius: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    .vs-track-labels {
+        display: flex; justify-content: space-between;
+        font-size: 0.6rem; font-weight: 600; color: #1e3a5f;
+        letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.4rem;
+    }
+
+    /* Biomarker flags */
+    .vs-flag {
+        display: flex; align-items: flex-start; gap: 0.55rem;
+        padding: 0.55rem 0.7rem; border-radius: 8px; margin-bottom: 0.35rem;
+    }
+    .vs-flag.abn { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.16); }
+    .vs-flag.nrm { background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.13); }
+    .vs-flag-name { font-size: 0.8rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.08rem; }
+    .vs-flag-detail { font-size: 0.7rem; color: #475569; }
+
+    /* Protocol items */
+    .vs-proto {
+        display: flex; align-items: flex-start; gap: 0.7rem;
+        padding: 0.6rem 0.85rem; background: #0a1120;
+        border: 1px solid rgba(148,163,184,0.08);
+        border-radius: 8px; margin-bottom: 0.35rem;
+        font-size: 0.8rem; color: #64748b; line-height: 1.4;
+    }
+    .vs-proto strong { color: #94a3b8; display: block; font-size: 0.78rem; margin-bottom: 0.1rem; }
+
+    /* Analytics card */
+    .vs-acard {
+        padding: 1rem 1.1rem; background: #0a1120;
+        border: 1px solid rgba(148,163,184,0.1); border-radius: 11px;
+    }
+    .vs-acard-title {
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: #334155;
+        margin-bottom: 0.75rem; padding-bottom: 0.6rem;
+        border-bottom: 1px solid rgba(148,163,184,0.06);
+    }
+
+    /* Confusion matrix */
+    .vs-cm { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+    .vs-cm-cell { padding: 0.9rem; border-radius: 9px; text-align: center; border: 1px solid; }
+    .vs-cm-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+    .vs-cm-val { font-family: 'JetBrains Mono', monospace; font-size: 1.85rem; font-weight: 700; line-height: 1; }
+    .vs-cm-desc { font-size: 0.65rem; margin-top: 0.25rem; opacity: 0.55; }
+    .vs-cm-cell.tp { background: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.18); color: #34d399; }
+    .vs-cm-cell.fp { background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.18); color: #f87171; }
+    .vs-cm-cell.tn { background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.18); color: #38bdf8; }
+    .vs-cm-cell.fn { background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.18); color: #fbbf24; }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -455,49 +718,59 @@ def calculate_risk(
 
 def render_sidebar(all_metrics: dict[str, Any]) -> str:
     with st.sidebar:
+        # Brand block
         st.markdown(
             """
-            <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.2rem;">
-                <span style="font-size: 2rem;">🩺</span>
+            <div class="vs-brand">
+                <div class="vs-brand-mark">🩺</div>
                 <div>
-                    <h2 style="margin: 0; font-size: 1.45rem; line-height: 1.1;">VitaScan <span style="color:#38bdf8;">AI</span></h2>
-                    <span style="font-size: 0.72rem; color: #94a3b8; letter-spacing: 0.05em; text-transform: uppercase;">Clinical Intelligence Studio</span>
+                    <div class="vs-brand-name">VitaScan <span style="color:#38bdf8;">AI</span></div>
+                    <div class="vs-brand-sub">Clinical Intelligence Platform</div>
                 </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
-        st.divider()
 
-        st.markdown("##### Select Clinical Disease Model")
+        # Disease selector
+        st.markdown('<div class="vs-section-label">Screening Module</div>', unsafe_allow_html=True)
         disease_names = list(DISEASE_META.keys())
         selected_disease = st.selectbox(
-            "Screening Target",
+            "Disease",
             disease_names,
-            format_func=lambda d: f"{DISEASE_META[d]['icon']} {d}",
+            format_func=lambda d: f"{DISEASE_META[d]['icon']}  {d}",
             label_visibility="collapsed",
         )
 
         d_meta = DISEASE_META[selected_disease]
         d_metrics = all_metrics.get(selected_disease, {})
 
+        # Model spec card
         st.markdown(
             f"""
-            <div class="glass-panel" style="margin-top: 0.75rem; padding: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Model Specs</span>
-                    <span style="font-size: 0.72rem; padding: 0.15rem 0.5rem; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-radius: 999px;">Active</span>
+            <div class="vs-model-card">
+                <div class="vs-mc-header">
+                    <span class="vs-mc-label">Active Model</span>
+                    <span class="vs-mc-live">● Live</span>
                 </div>
-                <div style="font-weight: 700; font-size: 1rem; color: #f8fafc;">{selected_disease}</div>
-                <div style="font-size: 0.78rem; color: #94a3b8; margin: 0.25rem 0 0.75rem;">{d_meta['model_type']}</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(148,163,184,0.1);">
-                    <div>
-                        <div style="font-size: 0.68rem; color: #64748b; text-transform: uppercase;">Accuracy</div>
-                        <div style="font-size: 0.95rem; font-weight: 700; color: #10b981;">{d_metrics.get('accuracy', 0)*100:.2f}%</div>
+                <div class="vs-mc-name">{selected_disease}</div>
+                <div class="vs-mc-type">{d_meta['model_type']}</div>
+                <div class="vs-mc-metrics">
+                    <div class="vs-mc-metric">
+                        <div class="vs-mc-val" style="color:#10b981;">{d_metrics.get('accuracy',0)*100:.1f}%</div>
+                        <div class="vs-mc-mlabel">Accuracy</div>
                     </div>
-                    <div>
-                        <div style="font-size: 0.68rem; color: #64748b; text-transform: uppercase;">ROC-AUC</div>
-                        <div style="font-size: 0.95rem; font-weight: 700; color: #38bdf8;">{d_metrics.get('roc_auc', 0):.4f}</div>
+                    <div class="vs-mc-metric">
+                        <div class="vs-mc-val" style="color:#38bdf8;">{d_metrics.get('roc_auc',0):.3f}</div>
+                        <div class="vs-mc-mlabel">ROC-AUC</div>
+                    </div>
+                    <div class="vs-mc-metric">
+                        <div class="vs-mc-val" style="color:#a78bfa;">{d_metrics.get('f1_score',0):.3f}</div>
+                        <div class="vs-mc-mlabel">F1 Score</div>
+                    </div>
+                    <div class="vs-mc-metric">
+                        <div class="vs-mc-val" style="color:#fb923c;">{d_metrics.get('cv_accuracy_mean',0)*100:.1f}%</div>
+                        <div class="vs-mc-mlabel">5-Fold CV</div>
                     </div>
                 </div>
             </div>
@@ -505,21 +778,26 @@ def render_sidebar(all_metrics: dict[str, Any]) -> str:
             unsafe_allow_html=True,
         )
 
-        st.divider()
-
+        # How-to guide
         st.markdown(
             """
-            <div style="padding: 0.5rem; background: rgba(15,23,42,0.6); border-radius: 12px; border: 1px solid rgba(148,163,184,0.12);">
-                <div style="font-size: 0.75rem; font-weight: 700; color: #cbd5e1; margin-bottom: 0.3rem;">⚡ Diagnostic Workflow</div>
-                <ol style="margin: 0; padding-left: 1.1rem; font-size: 0.75rem; color: #94a3b8; line-height: 1.6;">
-                    <li>Configure or load patient biomarkers</li>
-                    <li>Click <b>Run Diagnostic Calculation</b></li>
-                    <li>Review stratified risk & anomaly flags</li>
-                    <li>Export calibrated clinical dossier</li>
-                </ol>
+            <div class="vs-how">
+                <div class="vs-how-title">How to use</div>
+                <div class="vs-how-step"><div class="vs-step-n">1</div><span>Select a disease module above</span></div>
+                <div class="vs-how-step"><div class="vs-step-n">2</div><span>Enter patient biomarkers or load a preset</span></div>
+                <div class="vs-how-step"><div class="vs-step-n">3</div><span>Click Run Diagnostic Analysis</span></div>
+                <div class="vs-how-step"><div class="vs-step-n">4</div><span>Review the risk result and export report</span></div>
             </div>
-            <div style="margin-top: 1.25rem; font-size: 0.7rem; color: #64748b; line-height: 1.5;">
-                <strong style="color: #94a3b8;">⚠️ Clinical Notice:</strong> Educational screening prototype. For medical diagnosis, always consult a licensed medical practitioner.
+            """,
+            unsafe_allow_html=True,
+        )
+
+        # Disclaimer
+        st.markdown(
+            """
+            <div class="vs-disclaimer">
+                <strong>⚠ Clinical Notice</strong><br>
+                Educational ML prototype only. Does not constitute medical advice. Always consult a licensed practitioner for diagnosis.
             </div>
             """,
             unsafe_allow_html=True,
@@ -538,34 +816,38 @@ def main() -> None:
     artifacts = load_disease_artifacts(selected_disease)
     disease_metrics = artifacts["metrics"]
 
-    # Header presentation
+    # ── Page Header ───────────────────────────────────────────────────────────
+    acc_val = disease_metrics.get("accuracy", 0) * 100
+    auc_val = disease_metrics.get("roc_auc", 0)
+    cv_val  = disease_metrics.get("cv_accuracy_mean", 0) * 100
+
     st.markdown(
         f"""
-        <div class="hero-container">
-            <div class="badge-pill">
-                <span>🧬</span> {meta['category']} Intelligence Engine • 6 Clinical Models Online
+        <div class="vs-header">
+            <div class="vs-breadcrumb">
+                <span>VitaScan AI</span>
+                <span style="color:#1e3a5f;">&#8250;</span>
+                <span>{meta['category']}</span>
+                <span style="color:#1e3a5f;">&#8250;</span>
+                <span class="vs-bc-active">{selected_disease} Screening</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div class="vs-header-body">
                 <div>
-                    <h1 style="margin: 0; font-size: clamp(2rem, 3.8vw, 3.2rem); line-height: 1.1;">
-                        {meta['icon']} {selected_disease} <span style="color: {meta['accent']};">Screening</span>
-                    </h1>
-                    <p style="margin: 0.5rem 0 0; color: #94a3b8; max-width: 760px; font-size: 1rem; line-height: 1.6;">
-                        {meta['description']}
-                    </p>
+                    <h1 class="vs-header-title">{meta['icon']} {selected_disease} <span style="color:{meta['accent']};">Screening</span></h1>
+                    <div class="vs-header-desc">{meta['description']}</div>
                 </div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <div class="metric-badge-card" style="min-width: 110px;">
-                        <div class="metric-val" style="color: #10b981;">{disease_metrics['accuracy']*100:.2f}%</div>
-                        <div class="metric-lbl">Test Accuracy</div>
+                <div class="vs-kpis">
+                    <div class="vs-kpi">
+                        <div class="vs-kpi-val" style="color:#10b981;">{acc_val:.1f}%</div>
+                        <div class="vs-kpi-lbl">Accuracy</div>
                     </div>
-                    <div class="metric-badge-card" style="min-width: 110px;">
-                        <div class="metric-val" style="color: #38bdf8;">{disease_metrics['roc_auc']:.4f}</div>
-                        <div class="metric-lbl">ROC-AUC</div>
+                    <div class="vs-kpi">
+                        <div class="vs-kpi-val" style="color:#38bdf8;">{auc_val:.3f}</div>
+                        <div class="vs-kpi-lbl">ROC-AUC</div>
                     </div>
-                    <div class="metric-badge-card" style="min-width: 110px;">
-                        <div class="metric-val" style="color: #a78bfa;">{disease_metrics['cv_accuracy_mean']*100:.1f}%</div>
-                        <div class="metric-lbl">5-Fold CV</div>
+                    <div class="vs-kpi">
+                        <div class="vs-kpi-val" style="color:#a78bfa;">{cv_val:.1f}%</div>
+                        <div class="vs-kpi-lbl">5-Fold CV</div>
                     </div>
                 </div>
             </div>
@@ -574,445 +856,403 @@ def main() -> None:
         unsafe_allow_html=True,
     )
 
+    # ── Tabs ──────────────────────────────────────────────────────────────────
     tab_screening, tab_analytics, tab_biomarkers = st.tabs([
-        "🩺 Clinical Screening Studio",
-        "📊 Precision Model Analytics",
-        "🧬 Biomarker Reference Guide",
+        "  Patient Assessment  ",
+        "  Model Analytics  ",
+        "  Biomarker Reference  ",
     ])
 
     # =========================================================================
-    # TAB 1: CLINICAL SCREENING STUDIO
+    # TAB 1 — PATIENT ASSESSMENT
     # =========================================================================
     with tab_screening:
-        # Top presets and profile actions
-        st.markdown("#### Patient Biomarker Input")
-        preset_cols = st.columns([1.5, 1.5, 1.5, 1.5, 2.5])
-
-        with preset_cols[0]:
-            if st.button("🔴 High-Risk Profile", use_container_width=True, help="Load representative high-risk clinical case"):
-                high_prof = sample_profiles.get(selected_disease, {}).get("high_risk", {})
-                for k, v in high_prof.items():
-                    st.session_state[f"input_{selected_disease}_{k}"] = v
-                st.session_state[f"{selected_disease}_calculated"] = False
-                st.session_state["toast_msg"] = "Loaded High-Risk Clinical Profile"
-                st.rerun()
-
-        with preset_cols[1]:
-            if st.button("🟢 Low-Risk Profile", use_container_width=True, help="Load representative low-risk clinical case"):
-                low_prof = sample_profiles.get(selected_disease, {}).get("low_risk", {})
-                for k, v in low_prof.items():
-                    st.session_state[f"input_{selected_disease}_{k}"] = v
-                st.session_state[f"{selected_disease}_calculated"] = False
-                st.session_state["toast_msg"] = "Loaded Low-Risk Clinical Profile"
-                st.rerun()
-
-        with preset_cols[2]:
-            if st.button("⚖️ Median Baseline", use_container_width=True, help="Reset to cohort median values"):
-                for feat in artifacts["features"]:
-                    st.session_state.pop(f"input_{selected_disease}_{feat}", None)
-                st.session_state[f"{selected_disease}_calculated"] = False
-                st.session_state["toast_msg"] = "Reset to Cohort Median"
-                st.rerun()
-
-        with preset_cols[3]:
-            if st.button("🔄 Clear Calculation", use_container_width=True):
-                st.session_state[f"{selected_disease}_calculated"] = False
-                st.session_state.pop(f"{selected_disease}_calc_result", None)
-                st.rerun()
-
-        with preset_cols[4]:
-            if "toast_msg" in st.session_state:
-                st.success(st.session_state.pop("toast_msg"), icon="✨")
-
-        # Organize inputs logically into clinical categories
         features = artifacts["features"]
         encoders = artifacts["encoders"]
 
-        # Categorize features
         categorized_features: dict[str, list[str]] = {}
         for feat in features:
             f_meta = clinical_meta.get(feat, {})
-            cat = f_meta.get("category", "General Clinical Signals")
+            cat = f_meta.get("category", "Clinical Signals")
             categorized_features.setdefault(cat, []).append(feat)
 
-        # Collect user inputs
+        # Preset toolbar
+        st.markdown('<div class="vs-toolbar-label">Patient Data Entry</div>', unsafe_allow_html=True)
+        preset_cols = st.columns([1, 1, 1, 1, 2])
+
+        with preset_cols[0]:
+            if st.button("Load High-Risk Case", use_container_width=True):
+                prof = sample_profiles.get(selected_disease, {}).get("high_risk", {})
+                for k, v in prof.items():
+                    st.session_state[f"inp_{selected_disease}_{k}"] = v
+                st.session_state[f"{selected_disease}_calc"] = False
+                st.session_state["_toast"] = "High-risk case loaded"
+                st.rerun()
+
+        with preset_cols[1]:
+            if st.button("Load Low-Risk Case", use_container_width=True):
+                prof = sample_profiles.get(selected_disease, {}).get("low_risk", {})
+                for k, v in prof.items():
+                    st.session_state[f"inp_{selected_disease}_{k}"] = v
+                st.session_state[f"{selected_disease}_calc"] = False
+                st.session_state["_toast"] = "Low-risk case loaded"
+                st.rerun()
+
+        with preset_cols[2]:
+            if st.button("Reset to Defaults", use_container_width=True):
+                for feat in features:
+                    st.session_state.pop(f"inp_{selected_disease}_{feat}", None)
+                st.session_state[f"{selected_disease}_calc"] = False
+                st.rerun()
+
+        with preset_cols[3]:
+            if st.button("Clear Results", use_container_width=True):
+                st.session_state[f"{selected_disease}_calc"] = False
+                st.session_state.pop(f"{selected_disease}_result", None)
+                st.rerun()
+
+        with preset_cols[4]:
+            if "_toast" in st.session_state:
+                st.success(st.session_state.pop("_toast"))
+
+        st.markdown("<div style='height:0.5rem;'></div>", unsafe_allow_html=True)
+
+        # Input form
         raw_inputs: dict[str, Any] = {}
+        for category_name, cat_feats in categorized_features.items():
+            with st.expander(f"{category_name}  ·  {len(cat_feats)} parameters", expanded=True):
+                n_cols = min(3, len(cat_feats))
+                grid = st.columns(n_cols)
+                for idx, feat in enumerate(cat_feats):
+                    col = grid[idx % n_cols]
+                    with col:
+                        state_key = f"inp_{selected_disease}_{feat}"
+                        f_meta = clinical_meta.get(feat, {})
+                        unit_lbl = f" ({f_meta['unit']})" if "unit" in f_meta else ""
+                        label = f"{feat.replace('_', ' ').title()}{unit_lbl}"
+                        tip = f_meta.get("desc", feat)
+                        if "normal" in f_meta:
+                            tip += f"\n\nNormal: {f_meta['normal'][0]} - {f_meta['normal'][1]} {f_meta.get('unit','')}"
+                        if feat in encoders:
+                            enc = encoders[feat]
+                            options = list(enc.classes_)
+                            cur = st.session_state.get(state_key, options[0])
+                            idx_sel = options.index(str(cur)) if str(cur) in options else 0
+                            raw_inputs[feat] = st.selectbox(label, options, index=idx_sel, key=state_key, help=tip)
+                        else:
+                            nr = f_meta.get("normal", (0.0, 100.0))
+                            default = float(st.session_state.get(state_key, nr[0] if nr else 1.0))
+                            step = 0.01 if (abs(default) < 10 and default != int(default)) else 1.0
+                            raw_inputs[feat] = st.number_input(label, value=default, step=step, key=state_key, help=tip)
 
-        # Render inputs inside collapsible or segmented cards
-        with st.container():
-            for category_name, cat_feats in categorized_features.items():
-                with st.expander(f"📁 {category_name} ({len(cat_feats)} biomarkers)", expanded=True):
-                    grid_cols = st.columns(3 if len(cat_feats) >= 3 else len(cat_feats))
-                    for idx, feat in enumerate(cat_feats):
-                        col = grid_cols[idx % len(grid_cols)]
-                        with col:
-                            state_key = f"input_{selected_disease}_{feat}"
-                            f_meta = clinical_meta.get(feat, {})
-                            unit_label = f" ({f_meta['unit']})" if "unit" in f_meta else ""
-                            label_text = f"{feat.replace('_', ' ').title()}{unit_label}"
-                            help_text = f_meta.get("desc", f"Biomarker: {feat}")
-                            if "normal" in f_meta:
-                                help_text += f" | Normal Reference: {f_meta['normal'][0]} - {f_meta['normal'][1]} {f_meta.get('unit', '')}"
+        # Primary CTA
+        st.markdown("<div style='height:0.75rem;'></div>", unsafe_allow_html=True)
+        run_clicked = st.button("Run Diagnostic Analysis", type="primary", use_container_width=True)
 
-                            if feat in encoders:
-                                enc = encoders[feat]
-                                options = list(enc.classes_)
-                                current_val = st.session_state.get(state_key, options[0])
-                                idx_selected = options.index(str(current_val)) if str(current_val) in options else 0
-                                raw_inputs[feat] = st.selectbox(
-                                    label_text,
-                                    options,
-                                    index=idx_selected,
-                                    key=state_key,
-                                    help=help_text,
-                                )
-                            else:
-                                normal_range = f_meta.get("normal", (0.0, 100.0))
-                                default_val = float(st.session_state.get(state_key, normal_range[0] if normal_range else 1.0))
-                                step_size = 0.01 if (abs(default_val) < 10 and default_val != int(default_val)) else 1.0
-                                raw_inputs[feat] = st.number_input(
-                                    label_text,
-                                    value=default_val,
-                                    step=step_size,
-                                    key=state_key,
-                                    help=help_text,
-                                )
-
-        st.write("")
-        calc_btn_container = st.container()
-
-        with calc_btn_container:
-            calculate_clicked = st.button(
-                "⚡ Run Diagnostic Calculation & Risk Analysis",
-                type="primary",
-                use_container_width=True,
-                help="Execute trained ensemble model inference, calibrate probability, and check biomarker bounds",
-            )
-
-        # Trigger Calculation Pipeline
-        if calculate_clicked:
-            with st.status("🔬 Running Calibrated Clinical Assessment Pipeline...", expanded=True) as status:
-                st.write("Step 1/4: Validating biometric bounds & clinical limits...")
-                time.sleep(0.18)
-                st.write("Step 2/4: Standardizing input tensors with trained scaler...")
-                time.sleep(0.18)
-                st.write(f"Step 3/4: Executing {meta['model_type']} inference...")
-                time.sleep(0.22)
-                st.write("Step 4/4: Calibrating risk probability & detecting outlier biomarkers...")
+        if run_clicked:
+            with st.status("Running clinical assessment...", expanded=True) as status:
+                st.write("Validating biometric bounds...")
                 time.sleep(0.15)
-
+                st.write("Standardising input tensor with trained scaler...")
+                time.sleep(0.15)
+                st.write(f"Executing {meta['model_type']} inference...")
+                time.sleep(0.2)
+                st.write("Calibrating risk probability and detecting anomalies...")
+                time.sleep(0.12)
                 result = calculate_risk(selected_disease, raw_inputs, artifacts, clinical_meta)
-                st.session_state[f"{selected_disease}_calculated"] = True
-                st.session_state[f"{selected_disease}_calc_result"] = result
-                status.update(label="✅ Diagnostic Calculation Complete!", state="complete", expanded=False)
+                st.session_state[f"{selected_disease}_calc"] = True
+                st.session_state[f"{selected_disease}_result"] = result
+                status.update(label="Assessment complete", state="complete", expanded=False)
 
         st.divider()
 
-        # =====================================================================
-        # OUTPUT DISPLAY (Displayed strictly after calculation)
-        # =====================================================================
-        is_calculated = st.session_state.get(f"{selected_disease}_calculated", False)
-        calc_result = st.session_state.get(f"{selected_disease}_calc_result")
+        # Results
+        is_done = st.session_state.get(f"{selected_disease}_calc", False)
+        result  = st.session_state.get(f"{selected_disease}_result")
 
-        if not is_calculated or not calc_result or calc_result.get("disease") != selected_disease:
+        if not is_done or not result or result.get("disease") != selected_disease:
             st.markdown(
                 """
-                <div class="glass-panel" style="text-align: center; padding: 3rem 1.5rem; border: 2px dashed rgba(148,163,184,0.2);">
-                    <div style="font-size: 2.8rem; margin-bottom: 0.75rem;">⚡</div>
-                    <h3 style="margin: 0; color: #f8fafc;">Diagnostic Assessment Pending</h3>
-                    <p style="color: #94a3b8; max-width: 540px; margin: 0.5rem auto 1.5rem; font-size: 0.95rem; line-height: 1.6;">
-                        Adjust patient biomarkers above or load a clinical profile preset, then click 
-                        <strong style="color: #60a5fa;">"Run Diagnostic Calculation & Risk Analysis"</strong> to generate the verified clinical screening output.
-                    </p>
-                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: rgba(56,189,248,0.1); border-radius: 999px; color: #38bdf8; font-size: 0.8rem; font-weight: 600;">
-                        <span>🔒 High-Precision Machine Learning Pipeline Ready</span>
-                    </div>
+                <div class="vs-pending">
+                    <div class="vs-pending-ico">&#9889;</div>
+                    <h3>No assessment results yet</h3>
+                    <p>Enter patient biomarker values or load a preset, then click <strong>Run Diagnostic Analysis</strong>.</p>
+                    <div class="vs-pending-tag">ML inference pipeline ready</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
         else:
-            # RENDER OUTPUT AFTER CALCULATION
-            prob_pct = calc_result["probability_positive"] * 100.0
-            tier_color = calc_result["tier_color"]
-            tier_name = calc_result["risk_tier"]
+            prob       = result["probability_positive"] * 100.0
+            tier_color = result["tier_color"]
+            tier_name  = result["risk_tier"]
+            tier_cls   = result["tier_class"]
+            is_pos     = result["prediction"] == 1
+            dec_cls    = "pos" if is_pos else "neg"
+            dec_label  = "Positive — Disease Indicator Detected" if is_pos else "Negative — No Disease Indicator"
 
             st.markdown(
                 f"""
-                <div class="status-alert {calc_result['tier_class']}">
-                    <div style="font-size: 2.4rem;">{'🚨' if prob_pct >= 50 else '🛡️'}</div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                            <span style="font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: {tier_color};">
-                                Stratified Screening Assessment • Calculated {calc_result['timestamp']}
-                            </span>
-                            <span style="font-family: 'Space Grotesk', monospace; font-size: 0.88rem; font-weight: 700; color: #e2e8f0;">
-                                Decision: {'POSITIVE (Class 1)' if calc_result['prediction'] == 1 else 'NEGATIVE (Class 0)'}
-                            </span>
+                <div class="vs-result {tier_cls}">
+                    <div class="vs-result-ico {tier_cls}">{'&#128680;' if prob >= 50 else '&#128737;'}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div class="vs-result-meta" style="color:{tier_color};">
+                            {meta['category']} Screening &nbsp;&#183;&nbsp; {result['timestamp']}
                         </div>
-                        <h2 style="margin: 0.3rem 0; font-size: 1.85rem; color: #f8fafc;">
-                            {tier_name}: <span style="color: {tier_color};">{prob_pct:.2f}% Risk Probability</span>
-                        </h2>
-                        <p style="margin: 0; color: #cbd5e1; font-size: 0.95rem; line-height: 1.5;">
-                            {calc_result['action_summary']}
-                        </p>
+                        <div class="vs-result-title">
+                            {tier_name} &mdash; <span style="color:{tier_color};">{prob:.1f}%</span>
+                        </div>
+                        <div class="vs-decision {dec_cls}">{dec_label}</div>
+                        <div class="vs-result-action">{result['action_summary']}</div>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            # Key Metric Breakdown Cards
-            out_cols = st.columns(4)
-            with out_cols[0]:
-                st.markdown(
-                    f"""
-                    <div class="metric-badge-card">
-                        <div class="metric-val" style="color: {tier_color};">{prob_pct:.2f}%</div>
-                        <div class="metric-lbl">Calibrated Risk</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with out_cols[1]:
-                st.markdown(
-                    f"""
-                    <div class="metric-badge-card">
-                        <div class="metric-val" style="color: #10b981;">{calc_result['probability_negative']*100:.2f}%</div>
-                        <div class="metric-lbl">Negative Baseline</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with out_cols[2]:
-                st.markdown(
-                    f"""
-                    <div class="metric-badge-card">
-                        <div class="metric-val" style="color: #38bdf8;">{tier_name.split()[0]}</div>
-                        <div class="metric-lbl">Risk Tier</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-            with out_cols[3]:
-                st.markdown(
-                    f"""
-                    <div class="metric-badge-card">
-                        <div class="metric-val" style="color: #f59e0b;">{len(calc_result['anomalies'])}</div>
-                        <div class="metric-lbl">Biomarker Flags</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-            # Interactive Risk Spectrum Bar
-            pointer_pct = min(max(prob_pct, 1.5), 98.5)
             st.markdown(
                 f"""
-                <div class="risk-meter-container">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 600; color: #94a3b8;">
-                        <span>🟢 Low Risk (&lt;25%)</span>
-                        <span>🟡 Moderate (25-50%)</span>
-                        <span>🟠 Elevated (50-75%)</span>
-                        <span>🔴 Critical (&gt;75%)</span>
+                <div class="vs-stats">
+                    <div class="vs-stat">
+                        <div class="vs-stat-label">Positive Probability</div>
+                        <div class="vs-stat-val" style="color:{tier_color};">{prob:.1f}%</div>
+                        <div class="vs-stat-sub">Disease risk score</div>
                     </div>
-                    <div class="risk-bar-track">
-                        <div class="risk-pointer" style="left: {pointer_pct}%;"></div>
+                    <div class="vs-stat">
+                        <div class="vs-stat-label">Negative Probability</div>
+                        <div class="vs-stat-val" style="color:#10b981;">{result['probability_negative']*100:.1f}%</div>
+                        <div class="vs-stat-sub">Disease absence score</div>
                     </div>
-                    <div style="text-align: right; font-size: 0.74rem; color: #64748b; margin-top: 0.2rem;">
-                        Patient Marker: <strong style="color: {tier_color};">{prob_pct:.2f}%</strong>
+                    <div class="vs-stat">
+                        <div class="vs-stat-label">Risk Classification</div>
+                        <div class="vs-stat-val" style="color:{tier_color};font-size:1rem;">{tier_name}</div>
+                        <div class="vs-stat-sub">Stratified risk tier</div>
+                    </div>
+                    <div class="vs-stat">
+                        <div class="vs-stat-label">Anomalous Signals</div>
+                        <div class="vs-stat-val" style="color:#f59e0b;">{len(result['anomalies'])}</div>
+                        <div class="vs-stat-sub">Out-of-range biomarkers</div>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-            # Biomarker Anomaly Flags & Clinical Recommendations
-            col_anomalies, col_actions = st.columns([1, 1])
+            ptr = min(max(prob, 1.5), 98.5)
+            st.markdown(
+                f"""
+                <div class="vs-meter">
+                    <div class="vs-meter-head">
+                        <span class="vs-meter-title">Risk Probability Spectrum</span>
+                        <span class="vs-meter-val" style="color:{tier_color};">{prob:.1f}%</span>
+                    </div>
+                    <div class="vs-track">
+                        <div class="vs-thumb" style="left:{ptr}%;"></div>
+                    </div>
+                    <div class="vs-track-labels">
+                        <span>Low &lt;25%</span>
+                        <span>Moderate 25&ndash;50%</span>
+                        <span>Elevated 50&ndash;75%</span>
+                        <span>Critical &gt;75%</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-            with col_anomalies:
-                st.markdown("##### 🔍 Biomarker Anomaly Analysis")
-                if calc_result["anomalies"]:
-                    st.caption("Measurements outside normal physiological reference intervals:")
-                    for anom in calc_result["anomalies"]:
+            col_anom, col_proto = st.columns(2)
+
+            with col_anom:
+                st.markdown('<div class="vs-acard-title">Biomarker Anomaly Report</div>', unsafe_allow_html=True)
+                if result["anomalies"]:
+                    for a in result["anomalies"]:
                         st.markdown(
                             f"""
-                            <div class="anomaly-tag">
-                                <strong>⚠️ {anom['feature'].replace('_', ' ').title()}:</strong> 
-                                {anom['value']} ({anom['status']}) — Normal: {anom['normal']}
+                            <div class="vs-flag abn">
+                                <div>
+                                    <div class="vs-flag-name">{a['feature'].replace('_',' ').title()}</div>
+                                    <div class="vs-flag-detail">Value: <strong style="color:#fca5a5;">{a['value']}</strong> &middot; {a['status']} &middot; Reference: {a['normal']}</div>
+                                </div>
                             </div>
                             """,
                             unsafe_allow_html=True,
                         )
                 else:
-                    st.success("All analyzed biometric signals fall within standard physiological reference ranges.", icon="✅")
+                    st.success("All signals within normal physiological reference ranges.", icon="✓")
 
-                if calc_result["normal_signals"]:
-                    with st.expander(f"Standard Signals Within Range ({len(calc_result['normal_signals'])})"):
-                        for norm in calc_result["normal_signals"]:
+                if result["normal_signals"]:
+                    with st.expander(f"Normal signals ({len(result['normal_signals'])} in range)"):
+                        for n in result["normal_signals"]:
                             st.markdown(
                                 f"""
-                                <div class="normal-tag">
-                                    ✓ {norm['feature'].replace('_', ' ').title()}: {norm['value']} (Normal: {norm['normal']})
+                                <div class="vs-flag nrm">
+                                    <div>
+                                        <div class="vs-flag-name">{n['feature'].replace('_',' ').title()}</div>
+                                        <div class="vs-flag-detail">Value: {n['value']} &middot; Ref: {n['normal']}</div>
+                                    </div>
                                 </div>
                                 """,
                                 unsafe_allow_html=True,
                             )
 
-            with col_actions:
-                st.markdown("##### 📋 Recommended Clinical Protocol")
-                if prob_pct >= 50.0:
-                    st.markdown(
-                        """
-                        - **Immediate Physician Follow-up:** Urgent clinical evaluation with specialist recommended.
-                        - **Confirmatory Lab Panels:** Execute diagnostic bloodwork and imaging to corroborate screening pattern.
-                        - **Symptom Diary:** Document acute symptoms, cardiovascular changes, or discomfort.
-                        - **Preventive Precautions:** Avoid strenuous exertion or unprescribed medication until cleared.
-                        """
-                    )
+            with col_proto:
+                st.markdown('<div class="vs-acard-title">Recommended Clinical Protocol</div>', unsafe_allow_html=True)
+                if prob >= 50.0:
+                    protocols = [
+                        ("🔴", "Immediate Physician Referral", "Urgent specialist evaluation strongly recommended."),
+                        ("🧪", "Confirmatory Lab Panel", "Diagnostic bloodwork and imaging to corroborate the screening pattern."),
+                        ("📋", "Symptom Documentation", "Track acute changes, cardiovascular events, or discomfort."),
+                        ("⚠", "Activity Precautions", "Avoid strenuous exertion or unprescribed medications until cleared."),
+                    ]
                 else:
+                    protocols = [
+                        ("✅", "Routine Wellness Surveillance", "Continue standard annual exams per primary care schedule."),
+                        ("🥗", "Lifestyle Maintenance", "Sustain balanced nutrition and regular cardiovascular exercise."),
+                        ("📅", "Periodic Rescreening", "Repeat screening in 6–12 months as recommended by your provider."),
+                        ("💊", "Preventive Measures", "Adhere to prescribed preventive medications and supplements."),
+                    ]
+                for icon, title, desc in protocols:
                     st.markdown(
-                        """
-                        - **Routine Wellness Surveillance:** Continue standard annual health examinations.
-                        - **Lifestyle Maintenance:** Sustain balanced nutritional profile and cardiovascular exercise.
-                        - **Periodic Screening:** Repeat clinical screening in 6 to 12 months as indicated by primary care provider.
-                        """
+                        f"""
+                        <div class="vs-proto">
+                            <span style="font-size:1rem;flex-shrink:0;">{icon}</span>
+                            <div><strong>{title}</strong>{desc}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
 
-            # Export dossier button
-            st.write("")
-            report_data = {
+            st.markdown("<div style='height:0.75rem;'></div>", unsafe_allow_html=True)
+            report = {
                 "Screening_Target": selected_disease,
-                "Calculation_Timestamp": calc_result["timestamp"],
-                "Calibrated_Risk_Probability": f"{prob_pct:.4f}%",
-                "Model_Prediction_Class": "Positive" if calc_result["prediction"] == 1 else "Negative",
+                "Timestamp": result["timestamp"],
+                "Risk_Probability_Pct": f"{prob:.4f}%",
+                "Classification": "Positive" if is_pos else "Negative",
                 "Risk_Tier": tier_name,
-                "Model_Architecture": meta["model_type"],
-                **calc_result["raw_inputs"],
+                "Model": meta["model_type"],
+                **result["raw_inputs"],
             }
-            report_df = pd.DataFrame([report_data])
-
-            export_cols = st.columns([2, 1, 1])
-            with export_cols[0]:
+            report_df = pd.DataFrame([report])
+            ec1, ec2, _ = st.columns([1.5, 1, 2.5])
+            with ec1:
                 st.download_button(
-                    label="📄 Download Calibrated Clinical Dossier (CSV)",
+                    "Download Report (CSV)",
                     data=report_df.to_csv(index=False).encode("utf-8"),
-                    file_name=f"{selected_disease.lower().replace(' ', '_')}_clinical_dossier.csv",
+                    file_name=f"{selected_disease.lower().replace(' ','_')}_report.csv",
                     mime="text/csv",
                     use_container_width=True,
                 )
-            with export_cols[1]:
+            with ec2:
                 st.download_button(
-                    label="💾 Export JSON",
-                    data=json.dumps(report_data, indent=2).encode("utf-8"),
-                    file_name=f"{selected_disease.lower().replace(' ', '_')}_dossier.json",
+                    "Export JSON",
+                    data=json.dumps(report, indent=2).encode("utf-8"),
+                    file_name=f"{selected_disease.lower().replace(' ','_')}_report.json",
                     mime="application/json",
                     use_container_width=True,
                 )
 
     # =========================================================================
-    # TAB 2: PRECISION MODEL ANALYTICS & BENCHMARKS
+    # TAB 2 — MODEL ANALYTICS
     # =========================================================================
     with tab_analytics:
-        st.markdown("### High-Precision Multi-Disease Benchmarks")
-        st.caption("Exact quantitative metrics across all six trained clinical models evaluated on stratified test partitions.")
+        st.markdown('<div class="vs-toolbar-label">Multi-Disease Model Benchmarks</div>', unsafe_allow_html=True)
+        st.caption("Performance metrics across all six trained models on stratified holdout test partitions.")
 
-        # Side-by-side benchmark comparison table
-        table_rows = []
+        rows = []
         for d_name, d_met in all_metrics.items():
-            table_rows.append({
-                "Disease Target": f"{DISEASE_META[d_name]['icon']} {d_name}",
-                "Test Accuracy": f"{d_met['accuracy']*100:.2f}%",
+            rows.append({
+                "Disease": f"{DISEASE_META[d_name]['icon']}  {d_name}",
+                "Accuracy": f"{d_met['accuracy']*100:.2f}%",
                 "Precision": f"{d_met['precision']*100:.2f}%",
-                "Recall / Sens.": f"{d_met['recall']*100:.2f}%",
+                "Recall": f"{d_met['recall']*100:.2f}%",
                 "Specificity": f"{d_met['specificity']*100:.2f}%",
-                "F1-Score": f"{d_met['f1_score']:.4f}",
+                "F1 Score": f"{d_met['f1_score']:.4f}",
                 "ROC-AUC": f"{d_met['roc_auc']:.4f}",
-                "5-Fold CV Acc.": f"{d_met['cv_accuracy_mean']*100:.2f}% ± {d_met['cv_accuracy_std']*100:.2f}%",
+                "5-Fold CV": f"{d_met['cv_accuracy_mean']*100:.2f}% +/- {d_met['cv_accuracy_std']*100:.2f}%",
                 "Brier Score": f"{d_met['brier_score']:.4f}",
-                "Test Records": d_met["test_samples"],
+                "Test Samples": d_met["test_samples"],
             })
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-        bench_df = pd.DataFrame(table_rows)
-        st.dataframe(bench_df, use_container_width=True, hide_index=True)
+        st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="vs-toolbar-label">Deep Analysis &mdash; {meta["icon"]} {selected_disease}</div>',
+            unsafe_allow_html=True,
+        )
 
-        st.divider()
+        ac1, ac2 = st.columns(2)
 
-        # Detailed view for selected disease
-        st.markdown(f"#### 🔍 Deep Precision Analysis: {meta['icon']} {selected_disease}")
-
-        analytics_cols = st.columns([1, 1])
-
-        with analytics_cols[0]:
-            st.markdown("##### Confusion Matrix Partition")
+        with ac1:
+            st.markdown('<div class="vs-acard"><div class="vs-acard-title">Confusion Matrix</div>', unsafe_allow_html=True)
             cm = disease_metrics.get("confusion_matrix", {})
             tp, fp, tn, fn = cm.get("tp", 0), cm.get("fp", 0), cm.get("tn", 0), cm.get("fn", 0)
-            total_cases = tp + fp + tn + fn
-
+            total = tp + fp + tn + fn
             st.markdown(
                 f"""
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
-                    <div class="glass-panel" style="border-left: 4px solid #10b981; text-align: center;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">True Positives (TP)</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #10b981;">{tp}</div>
-                        <div style="font-size: 0.72rem; color: #64748b;">Correct disease identification</div>
+                <div class="vs-cm">
+                    <div class="vs-cm-cell tp">
+                        <div class="vs-cm-label">True Positive</div>
+                        <div class="vs-cm-val">{tp}</div>
+                        <div class="vs-cm-desc">Correctly identified disease</div>
                     </div>
-                    <div class="glass-panel" style="border-left: 4px solid #f43f5e; text-align: center;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">False Positives (FP)</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #f43f5e;">{fp}</div>
-                        <div style="font-size: 0.72rem; color: #64748b;">Healthy flagged as disease</div>
+                    <div class="vs-cm-cell fp">
+                        <div class="vs-cm-label">False Positive</div>
+                        <div class="vs-cm-val">{fp}</div>
+                        <div class="vs-cm-desc">Healthy flagged as disease</div>
                     </div>
-                    <div class="glass-panel" style="border-left: 4px solid #38bdf8; text-align: center;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">True Negatives (TN)</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #38bdf8;">{tn}</div>
-                        <div style="font-size: 0.72rem; color: #64748b;">Correct healthy identification</div>
+                    <div class="vs-cm-cell tn">
+                        <div class="vs-cm-label">True Negative</div>
+                        <div class="vs-cm-val">{tn}</div>
+                        <div class="vs-cm-desc">Correctly identified healthy</div>
                     </div>
-                    <div class="glass-panel" style="border-left: 4px solid #f59e0b; text-align: center;">
-                        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">False Negatives (FN)</div>
-                        <div style="font-size: 1.8rem; font-weight: 700; color: #f59e0b;">{fn}</div>
-                        <div style="font-size: 0.72rem; color: #64748b;">Missed positive disease case</div>
+                    <div class="vs-cm-cell fn">
+                        <div class="vs-cm-label">False Negative</div>
+                        <div class="vs-cm-val">{fn}</div>
+                        <div class="vs-cm-desc">Missed positive case</div>
                     </div>
                 </div>
-                <div style="margin-top: 0.75rem; font-size: 0.78rem; color: #94a3b8;">
-                    Total Test Sample Cohort: <strong style="color: #f8fafc;">{total_cases} patients</strong>
-                </div>
+                <div style="margin-top:0.8rem;font-size:0.72rem;color:#334155;">
+                    Test cohort: <strong style="color:#64748b;">{total} patients</strong>
+                </div></div>
                 """,
                 unsafe_allow_html=True,
             )
 
-        with analytics_cols[1]:
-            st.markdown("##### 🧬 Top Clinical Feature Drivers")
-            st.caption("Gini-importance & ensemble tree weights for decision split contribution:")
+        with ac2:
+            st.markdown('<div class="vs-acard"><div class="vs-acard-title">Feature Importances</div>', unsafe_allow_html=True)
+            st.caption("Gini-impurity based ensemble tree contribution weights:")
             importances = disease_metrics.get("feature_importances", {})
             if importances:
-                top_features = list(importances.items())[:8]
-                imp_df = pd.DataFrame(top_features, columns=["Biomarker Signal", "Relative Importance"])
-                imp_df["Relative Importance"] = imp_df["Relative Importance"].apply(lambda x: f"{x*100:.2f}%")
+                top = list(importances.items())[:8]
+                imp_df = pd.DataFrame(top, columns=["Biomarker Signal", "Importance"])
+                imp_df["Importance"] = imp_df["Importance"].apply(lambda x: f"{x*100:.2f}%")
                 st.dataframe(imp_df, use_container_width=True, hide_index=True)
             else:
-                st.info("Feature importance data is calculated via tree node impurity splits.")
+                st.info("Scores computed from ensemble tree node impurity splits.")
+            st.markdown("</div>", unsafe_allow_html=True)
 
     # =========================================================================
-    # TAB 3: BIOMARKER REFERENCE GUIDE
+    # TAB 3 — BIOMARKER REFERENCE
     # =========================================================================
     with tab_biomarkers:
-        st.markdown(f"### 📚 {meta['icon']} {selected_disease} Biomarker Encyclopedia")
-        st.caption("Physiological definitions, standard clinical units, and normal diagnostic reference intervals.")
-
-        bio_data = []
+        st.markdown(
+            f'<div class="vs-toolbar-label">{meta["icon"]} {selected_disease} &mdash; Biomarker Reference</div>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Physiological definitions, standard units, and normal diagnostic reference intervals for all model inputs.")
+        bio_rows = []
         for feat in artifacts["features"]:
             f_meta = clinical_meta.get(feat, {})
             norm = f_meta.get("normal")
-            norm_str = f"{norm[0]} – {norm[1]} {f_meta.get('unit', '')}" if norm else "N/A (Categorical / Derived)"
-            bio_data.append({
-                "Biomarker Name": feat.replace("_", " ").title(),
+            norm_str = f"{norm[0]} - {norm[1]} {f_meta.get('unit','')}" if norm else "N/A"
+            bio_rows.append({
+                "Biomarker": feat.replace("_", " ").title(),
                 "Category": f_meta.get("category", "General"),
-                "Standard Unit": f_meta.get("unit", "dimensionless"),
-                "Normal Reference Interval": norm_str,
-                "Clinical Description": f_meta.get("desc", f"Diagnostic signal {feat}"),
+                "Unit": f_meta.get("unit", "—"),
+                "Normal Reference Range": norm_str.strip(),
+                "Description": f_meta.get("desc", f"Diagnostic signal: {feat}"),
             })
-
-        st.dataframe(pd.DataFrame(bio_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(bio_rows), use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":
