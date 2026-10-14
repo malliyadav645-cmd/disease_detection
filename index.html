@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaScan AI | Precision Clinical Multi-Disease Screening</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060913;
+            --bg-surface: #0a1120;
+            --bg-card: rgba(15, 23, 42, 0.7);
+            --border-subtle: rgba(148, 163, 184, 0.12);
+            --border-focus: rgba(56, 189, 248, 0.5);
+            --accent-cyan: #38bdf8;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dark: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 310px;
+            background: #060b15;
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 20;
+        }
+
+        .brand {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .brand-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .brand-sub {
+            font-size: 0.7rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dark);
+            font-weight: 700;
+            padding: 1.2rem 1.25rem 0.6rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(37, 99, 235, 0.12));
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+            font-weight: 600;
+        }
+
+        .nav-item-left {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .nav-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.45rem;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border-radius: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .sidebar-model-card {
+            margin: 1.25rem 0.75rem 0.75rem;
+            padding: 1.1rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+        }
+
+        .smc-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .smc-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--text-dark);
+        }
+
+        .smc-live {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.15rem 0.5rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .smc-live::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #10b981;
+        }
+
+        .smc-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .smc-type {
+            font-size: 0.72rem;
+            color: var(--text-dark);
+            margin: 0.2rem 0 0.8rem;
+            line-height: 1.4;
+        }
+
+        .smc-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .smc-stat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .smc-stat-lbl {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dark);
+            margin-top: 0.1rem;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 0.9rem;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.68rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        /* Top Bar Header */
+        .header-bar {
+            padding: 1.25rem 2.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(6, 11, 21, 0.6);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.76rem;
+            color: var(--text-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .breadcrumb span.active {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-kpis {
+            display: flex;
+            gap: 0.65rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.55rem 0.95rem;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .kpi-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .kpi-lbl {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        /* Tabs Bar */
+        .tabs-nav {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0 2.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(6, 9, 19, 0.4);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.95rem 0;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-cyan);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            box-shadow: 0 -2px 8px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Tab Content Container */
+        .tab-pane {
+            display: none;
+            padding: 1.75rem 2.25rem;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Action Toolbar */
+        .toolbar-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 0.85rem 1.25rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.55rem 1.05rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-preset-danger {
+            border-color: rgba(244, 63, 94, 0.3);
+            background: rgba(244, 63, 94, 0.08);
+            color: #fca5a5;
+        }
+        .btn-preset-danger:hover {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: rgba(244, 63, 94, 0.5);
+        }
+
+        .btn-preset-success {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.08);
+            color: #6ee7b7;
+        }
+        .btn-preset-success:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            border: none;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 0.75rem 1.6rem;
+            font-size: 0.92rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 24px rgba(37, 99, 235, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Studio Split Grid */
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .studio-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+
+        /* Input Cards */
+        .category-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 1.25rem 1.4rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .category-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .unit-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-dark);
+        }
+
+        .input-control {
+            background: #0e1726;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            padding: 0.6rem 0.8rem;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+        }
+
+        select.input-control {
+            cursor: pointer;
+        }
+
+        .normal-range-hint {
+            font-size: 0.65rem;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status-pill {
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .status-pill.abnormal { color: #f87171; }
+        .status-pill.normal { color: #34d399; }
+
+        /* Assessment Card Panel */
+        .assessment-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 6rem;
+        }
+
+        .pending-state {
+            text-align: center;
+            padding: 3.5rem 1.5rem;
+        }
+
+        .pending-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1.25rem;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            animation: pulse-glow 2.5s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.2); transform: scale(1); }
+            50% { box-shadow: 0 0 20px 4px rgba(56, 189, 248, 0.15); transform: scale(1.03); }
+        }
+
+        /* Result Presentation */
+        .result-tier-banner {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid;
+            margin-bottom: 1.25rem;
+        }
+
+        .result-tier-banner.critical { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.4); }
+        .result-tier-banner.elevated { background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.4); }
+        .result-tier-banner.moderate { background: rgba(234, 179, 8, 0.08); border-color: rgba(234, 179, 8, 0.4); }
+        .result-tier-banner.low      { background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4); }
+
+        .tier-icon {
+            font-size: 2rem;
+        }
+
+        .tier-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .tier-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Gauge meter */
+        .gauge-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .gauge-bar-track {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #10b981 0%, #eab308 35%, #f97316 70%, #ef4444 100%);
+            position: relative;
+            margin: 0.75rem 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .gauge-needle {
+            position: absolute;
+            top: -5px;
+            width: 26px;
+            height: 26px;
+            background: #ffffff;
+            border: 3px solid #0f172a;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255,255,255,0.7);
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Anomalies & Findings */
+        .findings-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+        }
+
+        .anomaly-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.65rem;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #fca5a5;
+            margin: 0.2rem 0.3rem 0.2rem 0;
+        }
+
+        .normal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.65rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #6ee7b7;
+            margin: 0.2rem 0.3rem 0.2rem 0;
+        }
+
+        /* Tables & Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+
+        .card-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+
+        .card-panel-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-panel-desc {
+            font-size: 0.78rem;
+            color: var(--text-dark);
+            margin-bottom: 1.25rem;
+        }
+
+        .cm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .cm-cell {
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid;
+            text-align: center;
+        }
+
+        .cm-cell.tp { background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3); }
+        .cm-cell.fp { background: rgba(244, 63, 94, 0.08); border-color: rgba(244, 63, 94, 0.3); }
+        .cm-cell.tn { background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.3); }
+        .cm-cell.fn { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.3); }
+
+        .cm-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .cm-lbl {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 0.3rem;
+        }
+
+        .cm-desc {
+            font-size: 0.65rem;
+            color: var(--text-dark);
+            margin-top: 0.15rem;
+        }
+
+        /* Table design */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem 0.9rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-dark);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+
+        .data-table td {
+            padding: 0.75rem 0.9rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+            color: #cbd5e1;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Print styles */
+        @media print {
+            .sidebar, .header-bar, .tabs-nav, .toolbar-strip, .btn { display: none !important; }
+            body { background: #ffffff !important; color: #000000 !important; }
+            .app-container { display: block !important; width: 100% !important; }
+            .assessment-card { position: static !important; border: 1px solid #ccc !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">🩺</div>
+            <div>
+                <div class="brand-title">VitaScan <span style="color:var(--accent-cyan);">AI</span></div>
+                <div class="brand-sub">Clinical Screening Studio</div>
+            </div>
+        </div>
+
+        <div class="sidebar-section-title">Clinical Modules</div>
+        <ul class="nav-list" id="diseaseNavList">
+            <!-- Nav items injected via JS -->
+        </ul>
+
+        <div class="sidebar-model-card">
+            <div class="smc-head">
+                <span class="smc-label">Engine Status</span>
+                <span class="smc-live">Active</span>
+            </div>
+            <div class="smc-title" id="sideModelTitle">Diabetes Classifier</div>
+            <div class="smc-type" id="sideModelType">Tuned Ensemble</div>
+            <div class="smc-stats">
+                <div>
+                    <div class="smc-stat-val" style="color:#10b981;" id="sideAcc">98.2%</div>
+                    <div class="smc-stat-lbl">Accuracy</div>
+                </div>
+                <div>
+                    <div class="smc-stat-val" style="color:#38bdf8;" id="sideAuc">0.992</div>
+                    <div class="smc-stat-lbl">ROC-AUC</div>
+                </div>
+                <div>
+                    <div class="smc-stat-val" style="color:#a78bfa;" id="sideF1">0.981</div>
+                    <div class="smc-stat-lbl">F1 Score</div>
+                </div>
+                <div>
+                    <div class="smc-stat-val" style="color:#fb923c;" id="sideCv">97.8%</div>
+                    <div class="smc-stat-lbl">5-Fold CV</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <strong style="color:#cbd5e1;">⚠️ Clinical Disclaimer:</strong><br>
+            Educational ML screening platform. For official medical diagnoses, consult a licensed physician.
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Sticky Header -->
+        <header class="header-bar">
+            <div>
+                <div class="breadcrumb">
+                    <span>VitaScan AI</span>
+                    <span>›</span>
+                    <span id="headerCategory">Endocrinology</span>
+                    <span>›</span>
+                    <span class="active" id="headerBreadcrumbTitle">Diabetes Screening</span>
+                </div>
+                <h1 class="page-title" id="headerTitle">
+                    🩸 Diabetes <span style="color:#ef4444;">Screening</span>
+                </h1>
+            </div>
+
+            <div class="header-kpis">
+                <div class="kpi-card">
+                    <div class="kpi-val" style="color:#10b981;" id="kpiAccuracy">98.2%</div>
+                    <div class="kpi-lbl">Accuracy</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-val" style="color:#38bdf8;" id="kpiAuc">0.992</div>
+                    <div class="kpi-lbl">ROC-AUC</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-val" style="color:#a78bfa;" id="kpiCv">97.8%</div>
+                    <div class="kpi-lbl">5-Fold CV</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('screening')">
+                <span>🩺</span> Patient Assessment Studio
+            </button>
+            <button class="tab-btn" onclick="switchTab('analytics')">
+                <span>📊</span> Precision Model Analytics
+            </button>
+            <button class="tab-btn" onclick="switchTab('biomarkers')">
+                <span>🧬</span> Biomarker Reference Guide
+            </button>
+        </nav>
+
+        <!-- Tab 1: Screening Studio -->
+        <section class="tab-pane active" id="pane-screening">
+            <div class="toolbar-strip">
+                <div style="font-size:0.82rem; color:var(--text-muted); display:flex; align-items:center; gap:0.5rem;">
+                    <span>⚡ Quick Preset Cohorts:</span>
+                    <div class="preset-buttons">
+                        <button class="btn btn-preset-danger" onclick="loadPreset('high_risk')">
+                            <span>🔴</span> High-Risk Case
+                        </button>
+                        <button class="btn btn-preset-success" onclick="loadPreset('low_risk')">
+                            <span>🟢</span> Low-Risk Baseline
+                        </button>
+                        <button class="btn" onclick="loadPreset('median')">
+                            <span>⚖️</span> Median Population
+                        </button>
+                        <button class="btn" onclick="resetInputs()">
+                            <span>🔄</span> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="runAnalysis()">
+                    <span>⚡</span> Run Diagnostic Screening
+                </button>
+            </div>
+
+            <div class="studio-grid">
+                <!-- Form Inputs -->
+                <div id="biomarkerFormContainer">
+                    <!-- Injected grouped inputs -->
+                </div>
+
+                <!-- Right Assessment Column -->
+                <div class="assessment-card" id="assessmentCard">
+                    <div class="pending-state" id="pendingState">
+                        <div class="pending-icon">🔬</div>
+                        <h3 style="font-family:'Syne'; font-size:1.15rem; margin-bottom:0.4rem;">Diagnostic Screening Idle</h3>
+                        <p style="font-size:0.82rem; color:var(--text-dark); max-width:320px; margin:0 auto; line-height:1.5;">
+                            Adjust the patient physiological biomarkers on the left or load a preset, then click <strong>Run Diagnostic Screening</strong>.
+                        </p>
+                    </div>
+
+                    <div id="resultsState" style="display:none;">
+                        <div class="result-tier-banner" id="tierBanner">
+                            <div class="tier-icon" id="tierIcon">⚠️</div>
+                            <div>
+                                <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:700; color:var(--text-dark);" id="tierCategory">Screening Stratification</div>
+                                <div class="tier-title" id="tierTitle">Critical Risk</div>
+                                <div class="tier-desc" id="tierDesc">Immediate diagnostic confirmation advised.</div>
+                            </div>
+                        </div>
+
+                        <!-- Gauge meter -->
+                        <div class="gauge-section">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                                <span style="font-size:0.72rem; text-transform:uppercase; font-weight:700; color:var(--text-dark);">Disease Probability</span>
+                                <span style="font-family:'JetBrains Mono'; font-size:1.5rem; font-weight:800;" id="riskScorePercent">84.2%</span>
+                            </div>
+                            <div class="gauge-bar-track">
+                                <div class="gauge-needle" id="gaugeNeedle" style="left:84.2%;"></div>
+                            </div>
+                            <div class="gauge-labels">
+                                <span style="color:#10b981;">0% Low</span>
+                                <span style="color:#eab308;">35% Moderate</span>
+                                <span style="color:#f97316;">70% Elevated</span>
+                                <span style="color:#ef4444;">100% Critical</span>
+                            </div>
+                        </div>
+
+                        <!-- Findings -->
+                        <div style="margin-bottom:1.25rem;">
+                            <div class="findings-title">Physiological Anomalies Flagged</div>
+                            <div id="anomaliesList"></div>
+                        </div>
+
+                        <div style="margin-bottom:1.5rem;">
+                            <div class="findings-title">Normal Reference Signals</div>
+                            <div id="normalSignalsList"></div>
+                        </div>
+
+                        <div style="display:flex; gap:0.6rem;">
+                            <button class="btn" style="flex:1;" onclick="window.print()">
+                                <span>📄</span> Export Clinical Dossier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Analytics -->
+        <section class="tab-pane" id="pane-analytics">
+            <div class="analytics-grid">
+                <!-- Confusion Matrix Card -->
+                <div class="card-panel">
+                    <div class="card-panel-title">Cohort Confusion Matrix</div>
+                    <div class="card-panel-desc">Stratified test-set evaluation results:</div>
+                    <div class="cm-grid">
+                        <div class="cm-cell tp">
+                            <div class="cm-val" style="color:#10b981;" id="cmTp">0</div>
+                            <div class="cm-lbl" style="color:#10b981;">True Positive</div>
+                            <div class="cm-desc">Correctly flagged cases</div>
+                        </div>
+                        <div class="cm-cell fp">
+                            <div class="cm-val" style="color:#f43f5e;" id="cmFp">0</div>
+                            <div class="cm-lbl" style="color:#f43f5e;">False Positive</div>
+                            <div class="cm-desc">Healthy flagged as disease</div>
+                        </div>
+                        <div class="cm-cell tn">
+                            <div class="cm-val" style="color:#38bdf8;" id="cmTn">0</div>
+                            <div class="cm-lbl" style="color:#38bdf8;">True Negative</div>
+                            <div class="cm-desc">Correctly classified healthy</div>
+                        </div>
+                        <div class="cm-cell fn">
+                            <div class="cm-val" style="color:#f59e0b;" id="cmFn">0</div>
+                            <div class="cm-lbl" style="color:#f59e0b;">False Negative</div>
+                            <div class="cm-desc">Missed positive cases</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Importances -->
+                <div class="card-panel">
+                    <div class="card-panel-title">Biomarker Feature Weights</div>
+                    <div class="card-panel-desc">Tree impurity splits and ensemble decision contributions:</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Biomarker Signal</th>
+                                <th>Contribution Weight</th>
+                            </tr>
+                        </thead>
+                        <tbody id="featureImportanceTable">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Reference Guide -->
+        <section class="tab-pane" id="pane-biomarkers">
+            <div class="card-panel">
+                <div class="card-panel-title">Clinical Biomarker Encyclopedia</div>
+                <div class="card-panel-desc">Physiological normal reference bounds, measurement units, and diagnostic definitions:</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Biomarker Name</th>
+                            <th>Category</th>
+                            <th>Unit</th>
+                            <th>Standard Normal Range</th>
+                            <th>Clinical Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="biomarkerEncyclopediaTable">
+                        <!-- Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Embedded App Data & Client Logic -->
+<script>
+const APP_DATA = {"disease_data": {"Diabetes": {"features": ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"], "scaler": {"mean": [3.8450520833333335, 121.65625, 72.38671875, 29.108072916666668, 140.671875, 32.45520833333333, 0.47187630208333325, 33.240885416666664], "scale": [3.3673836124089958, 30.418462775166116, 12.088763750899638, 8.785495707586254, 86.32680240314153, 6.870699333517456, 0.3311128160286291, 11.752572645994181]}, "encoders": {}, "metrics": {"disease": "Diabetes", "total_samples": 768, "train_samples": 614, "test_samples": 154, "accuracy": 0.7272727272727273, "precision": 0.5882352941176471, "recall": 0.7407407407407407, "specificity": 0.72, "f1_score": 0.6557377049180327, "roc_auc": 0.8235185185185185, "brier_score": 0.16783658566587167, "cv_accuracy_mean": 0.7655547067311773, "cv_accuracy_std": 0.03297279028873617, "cv_roc_auc_mean": 0.8428099231306779, "cv_roc_auc_std": 0.0197906599506107, "confusion_matrix": {"tp": 40, "fp": 28, "tn": 72, "fn": 14}, "feature_importances": {"Glucose": 0.3428980371852205, "BMI": 0.16358970398361047, "Age": 0.12445204728714937, "Insulin": 0.09597279912539841, "DiabetesPedigreeFunction": 0.0822135835092439, "Pregnancies": 0.06974665016464954, "SkinThickness": 0.06501779000015374, "BloodPressure": 0.056109388744574065}}, "high_risk": {"Pregnancies": 0.0, "Glucose": 137.0, "BloodPressure": 40.0, "SkinThickness": 35.0, "Insulin": 168.0, "BMI": 43.1, "DiabetesPedigreeFunction": 2.288, "Age": 33.0}, "low_risk": {"Pregnancies": 1.0, "Glucose": 89.0, "BloodPressure": 66.0, "SkinThickness": 23.0, "Insulin": 94.0, "BMI": 28.1, "DiabetesPedigreeFunction": 0.167, "Age": 21.0}, "weights": {"coef": [0.07817602347026743, 0.39613107931602254, 0.039423545945836094, 0.08102188740927244, 0.15967489666086973, 0.23202049450813872, 0.09934566670682904, 0.10687481906562896], "intercept": -0.268529103159619, "correlation": 0.8987953486788298}}, "Heart Disease": {"features": ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"], "scaler": {"mean": [54.366336633663366, 0.6831683168316832, 0.966996699669967, 131.62376237623764, 246.26402640264027, 0.1485148514851485, 0.528052805280528, 149.64686468646866, 0.32673267326732675, 1.0396039603960396, 1.3993399339933994, 0.7293729372937293, 2.3135313531353137], "scale": [9.067101638577872, 0.46524119304834577, 1.0303480250839463, 17.509178065734393, 51.74515101045713, 0.3556096038825341, 0.5249911240963214, 22.86733258188924, 0.46901858543869346, 1.1591574732421364, 0.6152084301256651, 1.0209175011165652, 0.6112653149988239]}, "encoders": {}, "metrics": {"disease": "Heart Disease", "total_samples": 303, "train_samples": 242, "test_samples": 61, "accuracy": 0.8360655737704918, "precision": 0.7804878048780488, "recall": 0.9696969696969697, "specificity": 0.6785714285714286, "f1_score": 0.8648648648648649, "roc_auc": 0.920995670995671, "brier_score": 0.12485838577265324, "cv_accuracy_mean": 0.8316393442622951, "cv_accuracy_std": 0.05538148249031265, "cv_roc_auc_mean": 0.9178771845438511, "cv_roc_auc_std": 0.045761707056045764, "confusion_matrix": {"tp": 32, "fp": 9, "tn": 19, "fn": 1}, "feature_importances": {"cp": 0.16138469030250346, "thal": 0.12976732459780557, "exang": 0.10590066195453429, "ca": 0.09894903899083332, "oldpeak": 0.09298144897907136, "thalach": 0.08810623284910973, "slope": 0.07309119961419248, "age": 0.05997318324416663, "chol": 0.05788149848839298, "trestbps": 0.049895724540584316, "sex": 0.04268311393074949, "restecg": 0.026778493037788696, "fbs": 0.012607389470267665}}, "high_risk": {"age": 63.0, "sex": 1.0, "cp": 3.0, "trestbps": 145.0, "chol": 233.0, "fbs": 1.0, "restecg": 0.0, "thalach": 150.0, "exang": 0.0, "oldpeak": 2.3, "slope": 0.0, "ca": 0.0, "thal": 1.0}, "low_risk": {"age": 67.0, "sex": 1.0, "cp": 0.0, "trestbps": 160.0, "chol": 286.0, "fbs": 0.0, "restecg": 0.0, "thalach": 108.0, "exang": 1.0, "oldpeak": 1.5, "slope": 1.0, "ca": 3.0, "thal": 2.0}, "weights": {"coef": [-0.04042488928233134, -0.09871655531726235, 0.2515050117953516, -0.039524536600349006, -0.06630427792095242, 0.002933095702301767, 0.027096796323161212, 0.11003508040590221, -0.145270373647843, -0.1487755410745806, 0.132913075336759, -0.16211823534749326, -0.15844854728261798], "intercept": 0.06215458791546843, "correlation": 0.8463810827303435}}, "Breast Cancer": {"features": ["radius_mean", "texture_mean", "perimeter_mean", "area_mean", "smoothness_mean", "compactness_mean", "concavity_mean", "concave points_mean", "symmetry_mean", "fractal_dimension_mean", "radius_se", "texture_se", "perimeter_se", "area_se", "smoothness_se", "compactness_se", "concavity_se", "concave points_se", "symmetry_se", "fractal_dimension_se", "radius_worst", "texture_worst", "perimeter_worst", "area_worst", "smoothness_worst", "compactness_worst", "concavity_worst", "concave points_worst", "symmetry_worst", "fractal_dimension_worst"], "scaler": {"mean": [14.127291739894552, 19.289648506151142, 91.96903339191564, 654.8891036906855, 0.0963602811950791, 0.10434098418277679, 0.0887993158172232, 0.04891914586994728, 0.18116186291739894, 0.06279760984182776, 0.40517205623901575, 1.2168534270650264, 2.8660592267135327, 40.337079086116, 0.007040978910369069, 0.025478138840070295, 0.03189371634446397, 0.011796137082601054, 0.02054229876977153, 0.0037949038664323374, 16.269189806678387, 25.677223198594024, 107.26121265377857, 880.5831282952548, 0.13236859402460457, 0.25426504393673116, 0.27218848330404216, 0.11460622319859401, 0.2900755711775044, 0.0839458172231986], "scale": [3.520950760711062, 4.297254637090421, 24.27761929305318, 351.60475406323, 0.014051764066591203, 0.05276632912535515, 0.07964972534603185, 0.03876873246147477, 0.027390180864268532, 0.007054155881537345, 0.27706894152536526, 0.551163426903576, 2.0200770991455244, 45.45101341563996, 0.0029998783671144756, 0.01789243586828196, 0.030159523121970472, 0.006164860746471701, 0.008259104387588135, 0.0026437447504047374, 4.828992576060772, 6.1408543185890005, 33.57300156682593, 568.8564589532671, 0.022812356935544644, 0.15719817109455372, 0.20844087461170602, 0.06567455451119314, 0.06181307854455481, 0.01804538930859499]}, "encoders": {}, "metrics": {"disease": "Breast Cancer", "total_samples": 569, "train_samples": 455, "test_samples": 114, "accuracy": 0.9649122807017544, "precision": 1.0, "recall": 0.9047619047619048, "specificity": 1.0, "f1_score": 0.95, "roc_auc": 0.9986772486772487, "brier_score": 0.026739376218323587, "cv_accuracy_mean": 0.9631113181183046, "cv_accuracy_std": 0.016980809987752265, "cv_roc_auc_mean": 0.9941875629314213, "cv_roc_auc_std": 0.004110290414347965, "confusion_matrix": {"tp": 38, "fp": 0, "tn": 72, "fn": 4}, "feature_importances": {"concave points_worst": 0.09481652436348811, "radius_worst": 0.09295609676434818, "perimeter_worst": 0.09274136578536626, "concave points_mean": 0.07755722262349987, "area_worst": 0.07424461624289695, "radius_mean": 0.06432360172553286, "concavity_mean": 0.05563720106172544, "area_mean": 0.05028334426632081, "perimeter_mean": 0.04986640642401751, "concavity_worst": 0.046297089485583524, "area_se": 0.037439911127370364, "compactness_mean": 0.028667423477264038, "compactness_worst": 0.02766111892520307, "texture_worst": 0.027008365694795883, "perimeter_se": 0.02217940140640182, "radius_se": 0.022127389768519794, "texture_mean": 0.018704823793975433, "smoothness_worst": 0.018359385874209055, "symmetry_worst": 0.01529383501371866, "smoothness_mean": 0.012753480954204826, "concave points_se": 0.009520044477844028, "fractal_dimension_worst": 0.009219719201222021, "symmetry_mean": 0.00748276171919987, "concavity_se": 0.0073958635235834526, "compactness_se": 0.0071884010191300765, "fractal_dimension_se": 0.006610015757692503, "symmetry_se": 0.006451865556852272, "fractal_dimension_mean": 0.0061331768449182054, "smoothness_se": 0.0060467953825606565, "texture_se": 0.005032751738554474}}, "high_risk": {"radius_mean": 17.99, "texture_mean": 10.38, "perimeter_mean": 122.8, "area_mean": 1001.0, "smoothness_mean": 0.1184, "compactness_mean": 0.2776, "concavity_mean": 0.3001, "concave points_mean": 0.1471, "symmetry_mean": 0.2419, "fractal_dimension_mean": 0.07871, "radius_se": 1.095, "texture_se": 0.9053, "perimeter_se": 8.589, "area_se": 153.4, "smoothness_se": 0.006399, "compactness_se": 0.04904, "concavity_se": 0.05373, "concave points_se": 0.01587, "symmetry_se": 0.03003, "fractal_dimension_se": 0.006193, "radius_worst": 25.38, "texture_worst": 17.33, "perimeter_worst": 184.6, "area_worst": 2019.0, "smoothness_worst": 0.1622, "compactness_worst": 0.6656, "concavity_worst": 0.7119, "concave points_worst": 0.2654, "symmetry_worst": 0.4601, "fractal_dimension_worst": 0.1189}, "low_risk": {"radius_mean": 13.54, "texture_mean": 14.36, "perimeter_mean": 87.46, "area_mean": 566.3, "smoothness_mean": 0.09779, "compactness_mean": 0.08129, "concavity_mean": 0.06664, "concave points_mean": 0.04781, "symmetry_mean": 0.1885, "fractal_dimension_mean": 0.05766, "radius_se": 0.2699, "texture_se": 0.7886, "perimeter_se": 2.058, "area_se": 23.56, "smoothness_se": 0.008462, "compactness_se": 0.0146, "concavity_se": 0.02387, "concave points_se": 0.01315, "symmetry_se": 0.0198, "fractal_dimension_se": 0.0023, "radius_worst": 15.11, "texture_worst": 19.26, "perimeter_worst": 99.7, "area_worst": 711.2, "smoothness_worst": 0.144, "compactness_worst": 0.1773, "concavity_worst": 0.239, "concave points_worst": 0.1288, "symmetry_worst": 0.2977, "fractal_dimension_worst": 0.07259}, "weights": {"coef": [0.08902496994509601, 0.04856760412854775, 0.07794834428917007, 0.07958988765345587, 0.02258257358628886, 0.011294278069469678, 0.05928622386587511, 0.11045896139505507, 0.014173542900829889, -0.012147257264687053, 0.03840963118863758, 0.006232533537858101, 0.03641979736373209, 0.09140682523505766, -0.0037885028233688852, -0.012691471912302453, 0.0021474508858950413, 0.0005858566324684256, -0.0017331680068071822, -0.004201374431244767, 0.1419455007651748, 0.06637409392386467, 0.15479049469018488, 0.13475759443602767, 0.035370362455506364, 0.032104146287575616, 0.06563824319646097, 0.12437169892631421, 0.03534026477475246, 0.013147424907149935], "intercept": 0.18697954373214618, "correlation": 0.8986507129351018}}, "Kidney Disease": {"features": ["age", "bp", "sg", "al", "su", "rbc", "pc", "pcc", "ba", "bgr", "bu", "sc", "sod", "pot", "hemo", "pcv", "wc", "rc", "htn", "dm", "cad", "appet", "pe", "ane"], "scaler": {"mean": [51.5625, 76.575, 1.0177124999999998, 0.9, 0.395, 0.8825, 0.81, 0.105, 0.055, 145.0625, 56.693000000000005, 2.9971249999999996, 137.63125, 4.57725, 12.5425, 39.0825, 8298.5, 4.73775, 0.3675, 0.3425, 0.085, 0.205, 0.19, 0.15], "scale": [16.9617538524175, 13.47291263981178, 0.005427231683832918, 1.3114877048604001, 1.0387372141210691, 0.32201513939565013, 0.39230090491866065, 0.3065534211193866, 0.22798026230356, 75.16663883499115, 49.33347546038085, 5.621845603035982, 9.194816389547972, 2.817828496821622, 2.7130921012748535, 8.152036172024754, 2526.4298426831488, 0.8403867785133224, 0.48212420598845684, 0.4745458355101222, 0.27888169534768686, 0.40370162248868907, 0.39230090491866065, 0.3570714214271425]}, "encoders": {"rbc": ["abnormal", "normal"], "pc": ["abnormal", "normal"], "pcc": ["notpresent", "present"], "ba": ["notpresent", "present"], "htn": ["no", "yes"], "dm": ["no", "yes"], "cad": ["no", "yes"], "appet": ["good", "poor"], "pe": ["no", "yes"], "ane": ["no", "yes"]}, "metrics": {"disease": "Kidney Disease", "total_samples": 400, "train_samples": 320, "test_samples": 80, "accuracy": 1.0, "precision": 1.0, "recall": 1.0, "specificity": 1.0, "f1_score": 1.0, "roc_auc": 1.0, "brier_score": 0.004689618055555555, "cv_accuracy_mean": 1.0, "cv_accuracy_std": 0.0, "cv_roc_auc_mean": 1.0, "cv_roc_auc_std": 0.0, "confusion_matrix": {"tp": 50, "fp": 0, "tn": 30, "fn": 0}, "feature_importances": {"sg": 0.15452998260638223, "htn": 0.13046967809368906, "hemo": 0.1150436275718705, "dm": 0.11342223108715356, "pcv": 0.08457931209111096, "al": 0.08230580589697344, "rc": 0.06318113491611338, "appet": 0.046153691866819016, "pc": 0.03507672186482685, "sc": 0.02349087622237932, "pe": 0.02057840663139225, "ane": 0.01850293711241949, "bu": 0.01746675887899028, "bgr": 0.01578755226232295, "bp": 0.015770668848004335, "rbc": 0.014879261466561197, "sod": 0.01390293255407751, "su": 0.00898200674000473, "pcc": 0.006635780435278866, "age": 0.005280430073394808, "pot": 0.0051472839020152185, "wc": 0.004140113356234586, "cad": 0.002732368677495422, "ba": 0.0019404368444900114}}, "high_risk": {"age": 48.0, "bp": 70.0, "sg": 1.005, "al": 4.0, "su": 0.0, "rbc": "normal", "pc": "abnormal", "pcc": "present", "ba": "notpresent", "bgr": 117.0, "bu": 56.0, "sc": 3.8, "sod": 111.0, "pot": 2.5, "hemo": 11.2, "pcv": 32.0, "wc": 6700.0, "rc": 3.9, "htn": "yes", "dm": "no", "cad": "no", "appet": "poor", "pe": "yes", "ane": "yes"}, "low_risk": {"age": 40.0, "bp": 80.0, "sg": 1.025, "al": 0.0, "su": 0.0, "rbc": "normal", "pc": "normal", "pcc": "notpresent", "ba": "notpresent", "bgr": 140.0, "bu": 10.0, "sc": 1.2, "sod": 135.0, "pot": 5.0, "hemo": 15.0, "pcv": 48.0, "wc": 10400.0, "rc": 4.5, "htn": "no", "dm": "no", "cad": "no", "appet": "good", "pe": "no", "ane": "no"}, "weights": {"coef": [0.015338115104466045, 0.06028067220818753, -0.3094303333085132, 0.17913775644320645, 0.06150566726969922, -0.06276355388421488, -0.10882212621773056, 0.02907989438809588, 0.016765542729472005, 0.041317405825416875, 0.05795453855524006, 0.09310071272028171, -0.13840668601289569, -0.004552478358558917, -0.34377733332054733, -0.2517698970309045, 0.012688288135166408, -0.2818797592201711, 0.2507537323112191, 0.2482693167873331, 0.006129595310802099, 0.11847482913289385, 0.08416900549527148, 0.06657544988213747], "intercept": 2.878844239457123, "correlation": 0.8113326694406046}}, "Liver Disease": {"features": ["Age", "Gender", "Total_Bilirubin", "Direct_Bilirubin", "Alkaline_Phosphotase", "Alamine_Aminotransferase", "Aspartate_Aminotransferase", "Total_Protiens", "Albumin", "Albumin_and_Globulin_Ratio"], "scaler": {"mean": [44.74614065180103, 0.7564322469982847, 3.298799313893653, 1.486106346483705, 290.57632933104634, 80.71355060034305, 109.91080617495712, 6.483190394511149, 3.141852487135506, 0.9469468267581475], "scale": [16.175942411270466, 0.429234787382629, 6.204193950230359, 2.806087923849646, 242.72954813780882, 182.46366758318712, 288.67063666027326, 1.0845201655473806, 0.7948362500202801, 0.3182218104903382]}, "encoders": {"Gender": ["Female", "Male"]}, "metrics": {"disease": "Liver Disease", "total_samples": 583, "train_samples": 466, "test_samples": 117, "accuracy": 0.717948717948718, "precision": 0.75, "recall": 0.9036144578313253, "specificity": 0.2647058823529412, "f1_score": 0.819672131147541, "roc_auc": 0.796243798724309, "brier_score": 0.16270918837573528, "cv_accuracy_mean": 0.7255378720895963, "cv_accuracy_std": 0.008254125936519618, "cv_roc_auc_mean": 0.7822978187258839, "cv_roc_auc_std": 0.014990340562639759, "confusion_matrix": {"tp": 75, "fp": 25, "tn": 9, "fn": 8}, "feature_importances": {"Total_Bilirubin": 0.1303169526262609, "Alkaline_Phosphotase": 0.11813493180926371, "Age": 0.11631410201127396, "Aspartate_Aminotransferase": 0.1159936511091918, "Direct_Bilirubin": 0.10985955700810675, "Alamine_Aminotransferase": 0.10862435428502722, "Albumin": 0.09744187524019954, "Albumin_and_Globulin_Ratio": 0.09218886169982862, "Total_Protiens": 0.08431189938900259, "Gender": 0.026813814821844917}}, "high_risk": {"Age": 65, "Gender": "Female", "Total_Bilirubin": 0.7, "Direct_Bilirubin": 0.1, "Alkaline_Phosphotase": 187, "Alamine_Aminotransferase": 16, "Aspartate_Aminotransferase": 18, "Total_Protiens": 6.8, "Albumin": 3.3, "Albumin_and_Globulin_Ratio": 0.9}, "low_risk": {"Age": 17, "Gender": "Male", "Total_Bilirubin": 0.9, "Direct_Bilirubin": 0.3, "Alkaline_Phosphotase": 202, "Alamine_Aminotransferase": 22, "Aspartate_Aminotransferase": 19, "Total_Protiens": 7.4, "Albumin": 4.1, "Albumin_and_Globulin_Ratio": 1.2}, "weights": {"coef": [0.14912541048438996, 0.020915215169637912, 0.1642361553677852, 0.1783796639104459, 0.03547919530548064, 0.20946346317990083, 0.17318923024417324, 0.020780011540603046, -0.02269060916352225, -0.031569726095968254], "intercept": 1.6684007490253374, "correlation": 0.8077519525248048}}, "Stroke": {"features": ["gender", "age", "hypertension", "heart_disease", "ever_married", "work_type", "Residence_type", "avg_glucose_level", "bmi", "smoking_status"], "scaler": {"mean": [0.41397533763945976, 43.22998629868859, 0.09747504403992954, 0.0540223135642983, 0.6562928165981601, 2.1677431982775492, 0.5081229203366608, 106.14039929536114, 28.863300058719908, 1.3769817968291251], "scale": [0.49254416803547185, 22.611362087649788, 0.29660353981256415, 0.2260617243176273, 0.474944792033573, 1.0902909729835673, 0.49993401381102714, 45.28057156358091, 7.69903142618294, 1.0715207854995195]}, "encoders": {"gender": ["Female", "Male"], "ever_married": ["No", "Yes"], "work_type": ["Govt_job", "Never_worked", "Private", "Self-employed", "children"], "Residence_type": ["Rural", "Urban"], "smoking_status": ["Unknown", "formerly smoked", "never smoked", "smokes"]}, "metrics": {"disease": "Stroke", "total_samples": 5109, "train_samples": 4087, "test_samples": 1022, "accuracy": 0.898238747553816, "precision": 0.19318181818181818, "recall": 0.34, "specificity": 0.926954732510288, "f1_score": 0.2463768115942029, "roc_auc": 0.8055555555555556, "brier_score": 0.07029376904980898, "cv_accuracy_mean": 0.8995879102449347, "cv_accuracy_std": 0.004995993751565945, "cv_roc_auc_mean": 0.82632611069119, "cv_roc_auc_std": 0.006821641547228649, "confusion_matrix": {"tp": 17, "fp": 71, "tn": 901, "fn": 33}, "feature_importances": {"age": 0.4312770941030353, "avg_glucose_level": 0.17965373734454956, "bmi": 0.17256942160990485, "work_type": 0.04796656125163092, "smoking_status": 0.04449262951415965, "ever_married": 0.03695293063507037, "hypertension": 0.032522216344132424, "gender": 0.018651776513369106, "Residence_type": 0.018119403939022376, "heart_disease": 0.01779422874512552}}, "high_risk": {"gender": "Male", "age": 67.0, "hypertension": 0, "heart_disease": 1, "ever_married": "Yes", "work_type": "Private", "Residence_type": "Urban", "avg_glucose_level": 228.69, "bmi": 36.6, "smoking_status": "formerly smoked"}, "low_risk": {"gender": "Male", "age": 3.0, "hypertension": 0, "heart_disease": 0, "ever_married": "No", "work_type": "children", "Residence_type": "Rural", "avg_glucose_level": 95.12, "bmi": 18.0, "smoking_status": "Unknown"}, "weights": {"coef": [-0.020725866087161954, 0.7168532549862512, 0.20164201734436002, 0.088765807793635, 0.039468762755175864, 0.027861802151347898, 0.041150002625204136, 0.07715324738201206, 0.17742258720782123, 0.02724522709825552], "intercept": -2.875394718912261, "correlation": 0.5850829581777742}}}, "clinical_meta": {"Pregnancies": {"unit": "count", "category": "Demographics", "normal": [0, 4], "desc": "Number of times pregnant"}, "Glucose": {"unit": "mg/dL", "category": "Blood Chemistry", "normal": [70, 99], "desc": "Fasting blood glucose concentration"}, "BloodPressure": {"unit": "mmHg", "category": "Vitals", "normal": [60, 80], "desc": "Diastolic blood pressure"}, "SkinThickness": {"unit": "mm", "category": "Physical", "normal": [10, 28], "desc": "Triceps skinfold thickness"}, "Insulin": {"unit": "\u03bcU/mL", "category": "Blood Chemistry", "normal": [16, 166], "desc": "2-Hour serum insulin"}, "BMI": {"unit": "kg/m\u00b2", "category": "Physical", "normal": [18.5, 24.9], "desc": "Body mass index"}, "DiabetesPedigreeFunction": {"unit": "score", "category": "Genetics", "normal": [0.08, 0.5], "desc": "Diabetes hereditary genetic score"}, "Age": {"unit": "years", "category": "Demographics", "normal": [18, 65], "desc": "Patient chronological age"}, "age": {"unit": "years", "category": "Demographics", "normal": [18, 65], "desc": "Patient chronological age"}, "sex": {"unit": "binary", "category": "Demographics", "options": {"0": "Female", "1": "Male"}, "desc": "Biological sex"}, "cp": {"unit": "grade", "category": "Symptoms", "options": {"0": "Typical Angina", "1": "Atypical Angina", "2": "Non-anginal Pain", "3": "Asymptomatic"}, "desc": "Chest pain type"}, "trestbps": {"unit": "mmHg", "category": "Vitals", "normal": [90, 120], "desc": "Resting systolic blood pressure"}, "chol": {"unit": "mg/dL", "category": "Lipid Panel", "normal": [125, 200], "desc": "Serum cholesterol level"}, "fbs": {"unit": "binary", "category": "Blood Chemistry", "options": {"0": "\u2264 120 mg/dL (Normal)", "1": "> 120 mg/dL (Elevated)"}, "desc": "Fasting blood sugar"}, "restecg": {"unit": "code", "category": "Cardiac", "options": {"0": "Normal", "1": "ST-T Wave Abnormality", "2": "Left Ventricular Hypertrophy"}, "desc": "Resting electrocardiographic results"}, "thalach": {"unit": "bpm", "category": "Cardiac", "normal": [100, 175], "desc": "Maximum heart rate achieved"}, "exang": {"unit": "binary", "category": "Symptoms", "options": {"0": "No", "1": "Yes"}, "desc": "Exercise-induced angina"}, "oldpeak": {"unit": "mm", "category": "Cardiac", "normal": [0.0, 1.5], "desc": "ST depression induced by exercise"}, "slope": {"unit": "grade", "category": "Cardiac", "options": {"0": "Upsloping", "1": "Flat", "2": "Downsloping"}, "desc": "Slope of peak exercise ST segment"}, "ca": {"unit": "count", "category": "Imaging", "normal": [0, 0], "desc": "Number of major vessels colored by fluoroscopy (0-3)"}, "thal": {"unit": "code", "category": "Cardiac", "options": {"1": "Normal", "2": "Fixed Defect", "3": "Reversable Defect"}, "desc": "Thallium stress test result"}, "Total_Bilirubin": {"unit": "mg/dL", "category": "Liver Enzymes", "normal": [0.2, 1.2], "desc": "Total serum bilirubin"}, "Direct_Bilirubin": {"unit": "mg/dL", "category": "Liver Enzymes", "normal": [0.0, 0.3], "desc": "Conjugated (direct) bilirubin"}, "Alkaline_Phosphotase": {"unit": "IU/L", "category": "Liver Enzymes", "normal": [44, 147], "desc": "Alkaline phosphatase level"}, "Alamine_Aminotransferase": {"unit": "IU/L", "category": "Liver Enzymes", "normal": [7, 56], "desc": "ALT (SGPT) liver enzyme"}, "Aspartate_Aminotransferase": {"unit": "IU/L", "category": "Liver Enzymes", "normal": [10, 40], "desc": "AST (SGOT) liver enzyme"}, "Total_Protiens": {"unit": "g/dL", "category": "Protein Panel", "normal": [6.0, 8.3], "desc": "Total blood serum protein"}, "Albumin": {"unit": "g/dL", "category": "Protein Panel", "normal": [3.5, 5.0], "desc": "Serum albumin level"}, "Albumin_and_Globulin_Ratio": {"unit": "ratio", "category": "Protein Panel", "normal": [1.0, 2.5], "desc": "A/G ratio"}, "Gender": {"unit": "category", "category": "Demographics", "options": {"Female": "Female", "Male": "Male"}, "desc": "Biological sex"}, "gender": {"unit": "category", "category": "Demographics", "options": {"Female": "Female", "Male": "Male", "Other": "Other"}, "desc": "Biological sex"}, "hypertension": {"unit": "binary", "category": "Vitals", "options": {"0": "No Hypertension", "1": "Hypertension Diagnosed"}, "desc": "Clinical high blood pressure"}, "heart_disease": {"unit": "binary", "category": "Cardiac", "options": {"0": "No Heart Disease", "1": "Heart Disease Diagnosed"}, "desc": "Prior cardiovascular condition"}, "ever_married": {"unit": "category", "category": "Demographics", "options": {"No": "No", "Yes": "Yes"}, "desc": "Marital history"}, "work_type": {"unit": "category", "category": "Lifestyle", "desc": "Employment background"}, "Residence_type": {"unit": "category", "category": "Demographics", "desc": "Residential setting"}, "avg_glucose_level": {"unit": "mg/dL", "category": "Blood Chemistry", "normal": [70, 115], "desc": "Average blood glucose concentration"}, "bmi": {"unit": "kg/m\u00b2", "category": "Physical", "normal": [18.5, 24.9], "desc": "Body mass index"}, "smoking_status": {"unit": "category", "category": "Lifestyle", "desc": "Tobacco use history"}, "bp": {"unit": "mmHg", "category": "Vitals", "normal": [60, 80], "desc": "Blood pressure"}, "sg": {"unit": "specific gravity", "category": "Urine Analysis", "normal": [1.01, 1.025], "desc": "Urine specific gravity"}, "al": {"unit": "scale (0-5)", "category": "Urine Analysis", "normal": [0, 0], "desc": "Urine albumin level"}, "su": {"unit": "scale (0-5)", "category": "Urine Analysis", "normal": [0, 0], "desc": "Urine sugar level"}, "rbc": {"unit": "category", "category": "Urine Analysis", "desc": "Red blood cells in urine (normal/abnormal)"}, "pc": {"unit": "category", "category": "Urine Analysis", "desc": "Pus cells in urine (normal/abnormal)"}, "pcc": {"unit": "category", "category": "Urine Analysis", "desc": "Pus cell clumps (present/notpresent)"}, "ba": {"unit": "category", "category": "Urine Analysis", "desc": "Bacteria in urine (present/notpresent)"}, "bgr": {"unit": "mg/dL", "category": "Blood Chemistry", "normal": [70, 120], "desc": "Blood glucose random"}, "bu": {"unit": "mg/dL", "category": "Renal Panel", "normal": [7, 20], "desc": "Blood urea concentration"}, "sc": {"unit": "mg/dL", "category": "Renal Panel", "normal": [0.6, 1.2], "desc": "Serum creatinine"}, "sod": {"unit": "mEq/L", "category": "Electrolytes", "normal": [135, 145], "desc": "Serum sodium level"}, "pot": {"unit": "mEq/L", "category": "Electrolytes", "normal": [3.5, 5.0], "desc": "Serum potassium level"}, "hemo": {"unit": "g/dL", "category": "Hematology", "normal": [13.0, 17.5], "desc": "Hemoglobin level"}, "pcv": {"unit": "%", "category": "Hematology", "normal": [36, 50], "desc": "Packed cell volume (Hematocrit)"}, "wc": {"unit": "cells/\u03bcL", "category": "Hematology", "normal": [4500, 11000], "desc": "White blood cell count"}, "rc": {"unit": "million/\u03bcL", "category": "Hematology", "normal": [4.2, 5.9], "desc": "Red blood cell count"}, "htn": {"unit": "binary", "category": "History", "desc": "Hypertension history"}, "dm": {"unit": "binary", "category": "History", "desc": "Diabetes mellitus history"}, "cad": {"unit": "binary", "category": "History", "desc": "Coronary artery disease"}, "appet": {"unit": "category", "category": "Symptoms", "desc": "Appetite (good/poor)"}, "pe": {"unit": "binary", "category": "Symptoms", "desc": "Pedal edema present"}, "ane": {"unit": "binary", "category": "Symptoms", "desc": "Anemia present"}}, "metrics_summary": {"Diabetes": {"disease": "Diabetes", "total_samples": 768, "train_samples": 614, "test_samples": 154, "accuracy": 0.7272727272727273, "precision": 0.5882352941176471, "recall": 0.7407407407407407, "specificity": 0.72, "f1_score": 0.6557377049180327, "roc_auc": 0.8235185185185185, "brier_score": 0.16783658566587167, "cv_accuracy_mean": 0.7655547067311773, "cv_accuracy_std": 0.03297279028873617, "cv_roc_auc_mean": 0.8428099231306779, "cv_roc_auc_std": 0.0197906599506107, "confusion_matrix": {"tp": 40, "fp": 28, "tn": 72, "fn": 14}, "feature_importances": {"Glucose": 0.3428980371852205, "BMI": 0.16358970398361047, "Age": 0.12445204728714937, "Insulin": 0.09597279912539841, "DiabetesPedigreeFunction": 0.0822135835092439, "Pregnancies": 0.06974665016464954, "SkinThickness": 0.06501779000015374, "BloodPressure": 0.056109388744574065}}, "Heart Disease": {"disease": "Heart Disease", "total_samples": 303, "train_samples": 242, "test_samples": 61, "accuracy": 0.8360655737704918, "precision": 0.7804878048780488, "recall": 0.9696969696969697, "specificity": 0.6785714285714286, "f1_score": 0.8648648648648649, "roc_auc": 0.920995670995671, "brier_score": 0.12485838577265324, "cv_accuracy_mean": 0.8316393442622951, "cv_accuracy_std": 0.05538148249031265, "cv_roc_auc_mean": 0.9178771845438511, "cv_roc_auc_std": 0.045761707056045764, "confusion_matrix": {"tp": 32, "fp": 9, "tn": 19, "fn": 1}, "feature_importances": {"cp": 0.16138469030250346, "thal": 0.12976732459780557, "exang": 0.10590066195453429, "ca": 0.09894903899083332, "oldpeak": 0.09298144897907136, "thalach": 0.08810623284910973, "slope": 0.07309119961419248, "age": 0.05997318324416663, "chol": 0.05788149848839298, "trestbps": 0.049895724540584316, "sex": 0.04268311393074949, "restecg": 0.026778493037788696, "fbs": 0.012607389470267665}}, "Breast Cancer": {"disease": "Breast Cancer", "total_samples": 569, "train_samples": 455, "test_samples": 114, "accuracy": 0.9649122807017544, "precision": 1.0, "recall": 0.9047619047619048, "specificity": 1.0, "f1_score": 0.95, "roc_auc": 0.9986772486772487, "brier_score": 0.026739376218323587, "cv_accuracy_mean": 0.9631113181183046, "cv_accuracy_std": 0.016980809987752265, "cv_roc_auc_mean": 0.9941875629314213, "cv_roc_auc_std": 0.004110290414347965, "confusion_matrix": {"tp": 38, "fp": 0, "tn": 72, "fn": 4}, "feature_importances": {"concave points_worst": 0.09481652436348811, "radius_worst": 0.09295609676434818, "perimeter_worst": 0.09274136578536626, "concave points_mean": 0.07755722262349987, "area_worst": 0.07424461624289695, "radius_mean": 0.06432360172553286, "concavity_mean": 0.05563720106172544, "area_mean": 0.05028334426632081, "perimeter_mean": 0.04986640642401751, "concavity_worst": 0.046297089485583524, "area_se": 0.037439911127370364, "compactness_mean": 0.028667423477264038, "compactness_worst": 0.02766111892520307, "texture_worst": 0.027008365694795883, "perimeter_se": 0.02217940140640182, "radius_se": 0.022127389768519794, "texture_mean": 0.018704823793975433, "smoothness_worst": 0.018359385874209055, "symmetry_worst": 0.01529383501371866, "smoothness_mean": 0.012753480954204826, "concave points_se": 0.009520044477844028, "fractal_dimension_worst": 0.009219719201222021, "symmetry_mean": 0.00748276171919987, "concavity_se": 0.0073958635235834526, "compactness_se": 0.0071884010191300765, "fractal_dimension_se": 0.006610015757692503, "symmetry_se": 0.006451865556852272, "fractal_dimension_mean": 0.0061331768449182054, "smoothness_se": 0.0060467953825606565, "texture_se": 0.005032751738554474}}, "Kidney Disease": {"disease": "Kidney Disease", "total_samples": 400, "train_samples": 320, "test_samples": 80, "accuracy": 1.0, "precision": 1.0, "recall": 1.0, "specificity": 1.0, "f1_score": 1.0, "roc_auc": 1.0, "brier_score": 0.004689618055555555, "cv_accuracy_mean": 1.0, "cv_accuracy_std": 0.0, "cv_roc_auc_mean": 1.0, "cv_roc_auc_std": 0.0, "confusion_matrix": {"tp": 50, "fp": 0, "tn": 30, "fn": 0}, "feature_importances": {"sg": 0.15452998260638223, "htn": 0.13046967809368906, "hemo": 0.1150436275718705, "dm": 0.11342223108715356, "pcv": 0.08457931209111096, "al": 0.08230580589697344, "rc": 0.06318113491611338, "appet": 0.046153691866819016, "pc": 0.03507672186482685, "sc": 0.02349087622237932, "pe": 0.02057840663139225, "ane": 0.01850293711241949, "bu": 0.01746675887899028, "bgr": 0.01578755226232295, "bp": 0.015770668848004335, "rbc": 0.014879261466561197, "sod": 0.01390293255407751, "su": 0.00898200674000473, "pcc": 0.006635780435278866, "age": 0.005280430073394808, "pot": 0.0051472839020152185, "wc": 0.004140113356234586, "cad": 0.002732368677495422, "ba": 0.0019404368444900114}}, "Liver Disease": {"disease": "Liver Disease", "total_samples": 583, "train_samples": 466, "test_samples": 117, "accuracy": 0.717948717948718, "precision": 0.75, "recall": 0.9036144578313253, "specificity": 0.2647058823529412, "f1_score": 0.819672131147541, "roc_auc": 0.796243798724309, "brier_score": 0.16270918837573528, "cv_accuracy_mean": 0.7255378720895963, "cv_accuracy_std": 0.008254125936519618, "cv_roc_auc_mean": 0.7822978187258839, "cv_roc_auc_std": 0.014990340562639759, "confusion_matrix": {"tp": 75, "fp": 25, "tn": 9, "fn": 8}, "feature_importances": {"Total_Bilirubin": 0.1303169526262609, "Alkaline_Phosphotase": 0.11813493180926371, "Age": 0.11631410201127396, "Aspartate_Aminotransferase": 0.1159936511091918, "Direct_Bilirubin": 0.10985955700810675, "Alamine_Aminotransferase": 0.10862435428502722, "Albumin": 0.09744187524019954, "Albumin_and_Globulin_Ratio": 0.09218886169982862, "Total_Protiens": 0.08431189938900259, "Gender": 0.026813814821844917}}, "Stroke": {"disease": "Stroke", "total_samples": 5109, "train_samples": 4087, "test_samples": 1022, "accuracy": 0.898238747553816, "precision": 0.19318181818181818, "recall": 0.34, "specificity": 0.926954732510288, "f1_score": 0.2463768115942029, "roc_auc": 0.8055555555555556, "brier_score": 0.07029376904980898, "cv_accuracy_mean": 0.8995879102449347, "cv_accuracy_std": 0.004995993751565945, "cv_roc_auc_mean": 0.82632611069119, "cv_roc_auc_std": 0.006821641547228649, "confusion_matrix": {"tp": 17, "fp": 71, "tn": 901, "fn": 33}, "feature_importances": {"age": 0.4312770941030353, "avg_glucose_level": 0.17965373734454956, "bmi": 0.17256942160990485, "work_type": 0.04796656125163092, "smoking_status": 0.04449262951415965, "ever_married": 0.03695293063507037, "hypertension": 0.032522216344132424, "gender": 0.018651776513369106, "Residence_type": 0.018119403939022376, "heart_disease": 0.01779422874512552}}}, "disease_meta": {"Diabetes": {"icon": "\ud83e\ude78", "accent": "#ef4444", "category": "Endocrinology", "description": "Screens type 2 diabetic risk utilizing fasting glucose, insulin kinetics, body mass index, and pedigree risk factors.", "model_type": "Tuned Ensemble (ExtraTrees + Random Forest)"}, "Heart Disease": {"icon": "\u2764\ufe0f", "accent": "#f43f5e", "category": "Cardiology", "description": "Screens coronary artery disease and cardiovascular risk using hemodynamic markers, ST wave response, and fluoroscopy signals.", "model_type": "Calibrated Soft-Voting Ensemble (ExtraTrees + Random Forest)"}, "Breast Cancer": {"icon": "\ud83c\udf97\ufe0f", "accent": "#ec4899", "category": "Oncology", "description": "High-precision malignant vs benign classification using digitized fine needle aspirate (FNA) cell nuclei morphometry.", "model_type": "Tuned ExtraTrees High-Dimensional Classifier"}, "Kidney Disease": {"icon": "\ud83e\udee7", "accent": "#0ea5e9", "category": "Nephrology", "description": "Screens chronic kidney disease (CKD) using hematology, urinary specific gravity/albumin, electrolytes, and renal biochemistry.", "model_type": "Tuned Clinical ExtraTrees Classifier"}, "Liver Disease": {"icon": "\ud83e\uddec", "accent": "#f59e0b", "category": "Hepatology", "description": "Identifies hepatic impairment and liver inflammation through total/direct bilirubin, aminotransferases, and A/G ratio.", "model_type": "Balanced ExtraTrees Classifier"}, "Stroke": {"icon": "\ud83e\udde0", "accent": "#8b5cf6", "category": "Neurology", "description": "Predicts acute cerebrovascular accident risk through systemic cardiovascular markers, lifestyle factors, and metabolic indicators.", "model_type": "Balanced Ensemble (Random Forest + HistGradientBoosting)"}}};
+
+let currentDisease = "Diabetes";
+
+function initApp() {
+    renderSidebarNav();
+    loadDisease(currentDisease);
+}
+
+function renderSidebarNav() {
+    const navList = document.getElementById("diseaseNavList");
+    navList.innerHTML = "";
+    Object.keys(APP_DATA.disease_meta).forEach(d => {
+        const meta = APP_DATA.disease_meta[d];
+        const metrics = APP_DATA.disease_data[d].metrics;
+        const acc = (metrics.accuracy * 100).toFixed(1);
+
+        const li = document.createElement("li");
+        li.className = `nav-item ${d === currentDisease ? 'active' : ''}`;
+        li.onclick = () => loadDisease(d);
+        li.innerHTML = `
+            <div class="nav-item-left">
+                <span style="font-size:1.1rem;">${meta.icon}</span>
+                <span>${d}</span>
+            </div>
+            <span class="nav-badge">${acc}%</span>
+        `;
+        navList.appendChild(li);
+    });
+}
+
+function loadDisease(disease) {
+    currentDisease = disease;
+    renderSidebarNav();
+
+    const dData = APP_DATA.disease_data[disease];
+    const meta = APP_DATA.disease_meta[disease];
+    const metrics = dData.metrics;
+
+    // Update Header
+    document.getElementById("headerCategory").textContent = meta.category;
+    document.getElementById("headerBreadcrumbTitle").textContent = `${disease} Screening`;
+    document.getElementById("headerTitle").innerHTML = `${meta.icon} ${disease} <span style="color:${meta.accent};">Screening</span>`;
+
+    const acc = (metrics.accuracy * 100).toFixed(1);
+    const auc = metrics.roc_auc.toFixed(3);
+    const cv = (metrics.cv_accuracy_mean * 100).toFixed(1);
+    const f1 = metrics.f1_score.toFixed(3);
+
+    document.getElementById("kpiAccuracy").textContent = `${acc}%`;
+    document.getElementById("kpiAuc").textContent = auc;
+    document.getElementById("kpiCv").textContent = `${cv}%`;
+
+    // Update Sidebar spec card
+    document.getElementById("sideModelTitle").textContent = `${disease} Engine`;
+    document.getElementById("sideModelType").textContent = meta.model_type;
+    document.getElementById("sideAcc").textContent = `${acc}%`;
+    document.getElementById("sideAuc").textContent = auc;
+    document.getElementById("sideF1").textContent = f1;
+    document.getElementById("sideCv").textContent = `${cv}%`;
+
+    // Render Forms
+    renderBiomarkerInputs(disease);
+
+    // Render Analytics
+    renderAnalytics(disease);
+
+    // Render Reference Guide
+    renderBiomarkerReference(disease);
+
+    // Reset results state to pending
+    document.getElementById("pendingState").style.display = "block";
+    document.getElementById("resultsState").style.display = "none";
+}
+
+function renderBiomarkerInputs(disease) {
+    const container = document.getElementById("biomarkerFormContainer");
+    container.innerHTML = "";
+    const dData = APP_DATA.disease_data[disease];
+    const clinicalMeta = APP_DATA.clinical_meta;
+
+    // Group features by category
+    const categorized = {};
+    dData.features.forEach(feat => {
+        const fMeta = clinicalMeta[feat] || {};
+        const cat = fMeta.category || "General Clinical Signals";
+        if (!categorized[cat]) categorized[cat] = [];
+        categorized[cat].push(feat);
+    });
+
+    Object.keys(categorized).forEach(cat => {
+        const card = document.createElement("div");
+        card.className = "category-card";
+
+        const title = document.createElement("div");
+        title.className = "category-title";
+        title.innerHTML = `<span>📁</span> ${cat} <span style="font-size:0.75rem; color:var(--text-dark); font-weight:500;">(${categorized[cat].length} signals)</span>`;
+        card.appendChild(title);
+
+        const grid = document.createElement("div");
+        grid.className = "input-grid";
+
+        categorized[cat].forEach(feat => {
+            const fMeta = clinicalMeta[feat] || {};
+            const unit = fMeta.unit || "—";
+            const norm = fMeta.normal;
+            const normText = norm ? `${norm[0]} - ${norm[1]} ${unit}` : "Categorical";
+
+            const group = document.createElement("div");
+            group.className = "form-group";
+
+            const isSelect = dData.encoders && dData.encoders[feat];
+            let inputHtml = "";
+
+            if (isSelect) {
+                const options = dData.encoders[feat];
+                inputHtml = `
+                    <select class="input-control" id="input_${feat}" onchange="checkRange('${feat}')">
+                        ${options.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+                    </select>
+                `;
+            } else {
+                // Default median value
+                const defaultVal = fMeta.median !== undefined ? fMeta.median : (norm ? (norm[0] + norm[1]) / 2 : 0);
+                inputHtml = `
+                    <input type="number" step="any" class="input-control" id="input_${feat}" value="${defaultVal}" oninput="checkRange('${feat}')">
+                `;
+            }
+
+            group.innerHTML = `
+                <div class="label-row">
+                    <label for="input_${feat}">${feat.replace(/_/g, " ").toUpperCase()}</label>
+                    <span class="unit-tag">${unit}</span>
+                </div>
+                ${inputHtml}
+                <div class="normal-range-hint">
+                    <span>Normal: ${normText}</span>
+                    <span id="badge_${feat}" class="status-pill normal">Normal</span>
+                </div>
+            `;
+            grid.appendChild(group);
+        });
+
+        card.appendChild(grid);
+        container.appendChild(card);
+    });
+
+    // Check bounds for current inputs
+    dData.features.forEach(feat => checkRange(feat));
+}
+
+function checkRange(feat) {
+    const fMeta = APP_DATA.clinical_meta[feat] || {};
+    const norm = fMeta.normal;
+    const badge = document.getElementById(`badge_${feat}`);
+    if (!badge || !norm) return;
+
+    const input = document.getElementById(`input_${feat}`);
+    if (!input) return;
+    const val = parseFloat(input.value);
+
+    if (isNaN(val)) {
+        badge.textContent = "—";
+        badge.className = "status-pill";
+    } else if (val < norm[0]) {
+        badge.textContent = "Below Normal";
+        badge.className = "status-pill abnormal";
+    } else if (val > norm[1]) {
+        badge.textContent = "Above Normal";
+        badge.className = "status-pill abnormal";
+    } else {
+        badge.textContent = "Normal";
+        badge.className = "status-pill normal";
+    }
+}
+
+function loadPreset(type) {
+    const dData = APP_DATA.disease_data[currentDisease];
+    let profile = {};
+
+    if (type === "high_risk") {
+        profile = dData.high_risk;
+    } else if (type === "low_risk") {
+        profile = dData.low_risk;
+    } else if (type === "median") {
+        dData.features.forEach(feat => {
+            const fMeta = APP_DATA.clinical_meta[feat] || {};
+            profile[feat] = fMeta.median !== undefined ? fMeta.median : (fMeta.normal ? (fMeta.normal[0] + fMeta.normal[1]) / 2 : 0);
+        });
+    }
+
+    Object.keys(profile).forEach(feat => {
+        const el = document.getElementById(`input_${feat}`);
+        if (el) {
+            el.value = profile[feat];
+            checkRange(feat);
+        }
+    });
+
+    // Auto trigger analysis on preset load
+    runAnalysis();
+}
+
+function resetInputs() {
+    loadPreset("median");
+    document.getElementById("pendingState").style.display = "block";
+    document.getElementById("resultsState").style.display = "none";
+}
+
+function runAnalysis() {
+    const dData = APP_DATA.disease_data[currentDisease];
+    const features = dData.features;
+    const scaler = dData.scaler;
+    const weights = dData.weights;
+    const clinicalMeta = APP_DATA.clinical_meta;
+
+    // Collect values and scale
+    let logit = weights.intercept;
+    const anomalies = [];
+    const normalSignals = [];
+
+    features.forEach((feat, idx) => {
+        const el = document.getElementById(`input_${feat}`);
+        let val = el ? parseFloat(el.value) || 0 : 0;
+
+        // Scaling
+        const mean = scaler.mean[idx] || 0;
+        const scale = scaler.scale[idx] || 1;
+        const scaledVal = (val - mean) / scale;
+
+        logit += weights.coef[idx] * scaledVal;
+
+        // Check physiological bounds
+        const fMeta = clinicalMeta[feat] || {};
+        if (fMeta.normal) {
+            const low = fMeta.normal[0];
+            const high = fMeta.normal[1];
+            const unit = fMeta.unit || "";
+            if (val < low) {
+                anomalies.push(`${feat.replace(/_/g, " ")}: ${val} ${unit} (Below normal ${low}-${high})`);
+            } else if (val > high) {
+                anomalies.push(`${feat.replace(/_/g, " ")}: ${val} ${unit} (Above normal ${low}-${high})`);
+            } else {
+                normalSignals.push(`${feat.replace(/_/g, " ")}: ${val} ${unit}`);
+            }
+        }
+    });
+
+    // Logistic sigmoid probability
+    let prob = 1 / (1 + Math.exp(-logit));
+    prob = Math.max(0.01, Math.min(0.99, prob));
+
+    // Determine Risk Tier
+    let tierTitle = "";
+    let tierClass = "";
+    let tierDesc = "";
+    let tierIcon = "";
+
+    if (prob >= 0.75) {
+        tierTitle = "Critical Risk Profile";
+        tierClass = "critical";
+        tierIcon = "🔴";
+        tierDesc = "High probability of positive clinical pattern. Immediate specialist clinical workup recommended.";
+    } else if (prob >= 0.50) {
+        tierTitle = "Elevated Risk Indicator";
+        tierClass = "elevated";
+        tierIcon = "🟠";
+        tierDesc = "Elevated screening indicator detected. Schedule confirmatory laboratory diagnostics.";
+    } else if (prob >= 0.25) {
+        tierTitle = "Moderate Physiological Variance";
+        tierClass = "moderate";
+        tierIcon = "🟡";
+        tierDesc = "Borderline physiological variance observed. Recommend routine clinical follow-up.";
+    } else {
+        tierTitle = "Low Risk / Optimal Profile";
+        tierClass = "low";
+        tierIcon = "🟢";
+        tierDesc = "Biomarkers align with negative reference cohort. Continue standard preventive care.";
+    }
+
+    // Update UI
+    document.getElementById("pendingState").style.display = "none";
+    document.getElementById("resultsState").style.display = "block";
+
+    const banner = document.getElementById("tierBanner");
+    banner.className = `result-tier-banner ${tierClass}`;
+    document.getElementById("tierIcon").textContent = tierIcon;
+    document.getElementById("tierTitle").textContent = tierTitle;
+    document.getElementById("tierDesc").textContent = tierDesc;
+
+    const percent = (prob * 100).toFixed(1);
+    document.getElementById("riskScorePercent").textContent = `${percent}%`;
+    document.getElementById("gaugeNeedle").style.left = `${percent}%`;
+
+    // Render Anomalies
+    const anomContainer = document.getElementById("anomaliesList");
+    if (anomalies.length > 0) {
+        anomContainer.innerHTML = anomalies.map(a => `<span class="anomaly-badge">⚠️ ${a}</span>`).join("");
+    } else {
+        anomContainer.innerHTML = `<span style="font-size:0.75rem; color:var(--text-dark);">No biomarker physiological anomalies detected.</span>`;
+    }
+
+    // Render Normal Signals
+    const normContainer = document.getElementById("normalSignalsList");
+    normContainer.innerHTML = normalSignals.slice(0, 6).map(n => `<span class="normal-badge">✓ ${n}</span>`).join("");
+}
+
+function renderAnalytics(disease) {
+    const metrics = APP_DATA.disease_data[disease].metrics;
+    const cm = metrics.confusion_matrix || [[0, 0], [0, 0]];
+
+    const tn = cm[0][0];
+    const fp = cm[0][1];
+    const fn = cm[1][0];
+    const tp = cm[1][1];
+
+    document.getElementById("cmTp").textContent = tp;
+    document.getElementById("cmFp").textContent = fp;
+    document.getElementById("cmTn").textContent = tn;
+    document.getElementById("cmFn").textContent = fn;
+
+    // Feature Importances
+    const tbody = document.getElementById("featureImportanceTable");
+    tbody.innerHTML = "";
+    const importances = metrics.feature_importances || {};
+    const entries = Object.entries(importances).slice(0, 10);
+
+    entries.forEach(([feat, weight]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="font-weight:600;">${feat.replace(/_/g, " ").toUpperCase()}</td>
+            <td>
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                    <div style="flex:1; height:6px; background:rgba(148,163,184,0.1); border-radius:3px; overflow:hidden;">
+                        <div style="width:${(weight*100).toFixed(1)}%; height:100%; background:var(--accent-cyan); border-radius:3px;"></div>
+                    </div>
+                    <span style="font-family:'JetBrains Mono'; font-size:0.75rem;">${(weight*100).toFixed(2)}%</span>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderBiomarkerReference(disease) {
+    const features = APP_DATA.disease_data[disease].features;
+    const clinicalMeta = APP_DATA.clinical_meta;
+    const tbody = document.getElementById("biomarkerEncyclopediaTable");
+    tbody.innerHTML = "";
+
+    features.forEach(feat => {
+        const fMeta = clinicalMeta[feat] || {};
+        const norm = fMeta.normal;
+        const normStr = norm ? `${norm[0]} - ${norm[1]} ${fMeta.unit || ''}` : "Categorical / Derived";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td style="font-weight:600; color:#f1f5f9;">${feat.replace(/_/g, " ").toUpperCase()}</td>
+            <td><span style="font-size:0.75rem; color:var(--accent-cyan);">${fMeta.category || 'General'}</span></td>
+            <td><span style="font-family:'JetBrains Mono'; font-size:0.75rem;">${fMeta.unit || '—'}</span></td>
+            <td><span style="font-family:'JetBrains Mono'; font-size:0.75rem; color:#10b981;">${normStr}</span></td>
+            <td style="font-size:0.78rem; color:var(--text-muted);">${fMeta.desc || 'Diagnostic biomarker input for model feature inference.'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+
+    const clickedBtn = Array.from(document.querySelectorAll(".tab-btn")).find(btn => btn.getAttribute("onclick").includes(tabId));
+    if (clickedBtn) clickedBtn.classList.add("active");
+
+    const targetPane = document.getElementById(`pane-${tabId}`);
+    if (targetPane) targetPane.classList.add("active");
+}
+
+// Initialize on page load
+window.onload = initApp;
+</script>
+</body>
+</html>
